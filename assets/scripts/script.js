@@ -6,16 +6,18 @@ const renderDetailedRecipe = (recipe) => {
 
 function clickedRecipeDetails() {
 	// TODO: clear all search results
+	$('#search-results').empty();
 	// TODO: call getRecipeInstructions and pass in the ID
 	let id = $(this).attr('id');
 	console.log('ID: ', id);
+	getRecipeInstructions(recipe);
 }
 
 /**
  * function to render search results
  * @param {object} recipe the response object from the search endpoint from Spoonacular's API
  */
-const renderSearchResults = (recipe) => {
+const renderSearchResults = (recipe, ingredients) => {
 	console.log(recipe);
 
 	// create the html elements
@@ -25,14 +27,16 @@ const renderSearchResults = (recipe) => {
 	}).text(recipe.title);
 	const cardBody = $('<div>', { class: 'card-body' });
 	const img = $('<img>', {
-		src: 'https://picsum.photos/200',
+		src: recipe.image,
 		class: 'rounded float-left mr-3'
 	});
-	const cardTitle = $('<h5>', { class: 'card-title' }).text('cardTitle');
-	const cardText = $('<p>', { class: 'card-text' }).text('cardText');
+	const cardTitle = $('<h5>', { class: 'card-title' }).text(recipe.readyInMinutes + " minute(s) - Serving Size: " + recipe.servings);
+
+	const cardText = $('<p>', { class: 'card-text' }).text("Ingrediants "+ ingredients);
+	const cardRate = $('<h5.', { class: 'health-score'}).text(recipe.healthScore);
 	const btn = $('<button>', {
 		class: 'btn btn-primary recipe-details-button',
-		id: '0'
+		id: recipe.id
 	}).text('View Recipe Details');
 
 	// append elements to the html
@@ -47,7 +51,9 @@ const renderSearchResults = (recipe) => {
  */
 const getInput = () => {
 	// TODO: check if .form-control is empty else...
+	
 	// TODO: clear any previous search results
+	$('#search-results').empty();
 	// TODO: clear all detailed recipe instructions
 
 	// store search in input
@@ -56,6 +62,7 @@ const getInput = () => {
 		.trim();
 
 	// TODO: clear text from .form-control
+	$('.form-control').val("");
 
 	// call getRecipe() and pass in input as a searchTerm for the first parameter
 	getRecipe(input, 2, SPOONACULAR_API_KEY);
@@ -71,6 +78,7 @@ const getInput = () => {
  */
 const getRecipeInstructions = (id, apiKey) => {
 	// the url past to the request header
+	console.log(id);
 	const url =
 		'https://api.spoonacular.com/recipes/' +
 		id +
@@ -86,8 +94,13 @@ const getRecipeInstructions = (id, apiKey) => {
 	})
 		.then((res) => {
 			// TODO: call renderDetailedRecipe passing in the response
-			console.log(res);
-			console.log(res.instructions);
+			let ingredientsStr = '';
+				for (let i = 0; i < res.extendedIngredients.length; i++) {
+				ingredientsStr += res.extendedIngredients[i].name + ', ';
+				}
+				const ingredients = ingredientsStr.replace(/,\s*$/, '');
+     			renderSearchResults(res, ingredients);
+
 		})
 		.catch((err) => console.log('Error occured', err));
 };
@@ -117,8 +130,11 @@ const getRecipe = (searchTerm, limit = 10, apiKey) => {
 		.then((res) => {
 			// loop through the responses
 			for (let i = 0; i < res.results.length; i++) {
+
+				getRecipeInstructions(res.results[i].id, apiKey);
+
 				// render the search results passing in the response
-				renderSearchResults(res.results[i]);
+				//renderSearchResults(res.results[i],recipeResults);
 			}
 		})
 		.catch((err) => console.log('Error occured', err));
