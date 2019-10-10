@@ -1,8 +1,12 @@
 body {
-  background: url('../images/papyrus-dark.png');
-}
-img{
-  width: 15%;
-  height: 15%;
+	background: url('../images/papyrus-dark.png');
 }
 
+img {
+	width: 15%;
+	height: 15%;
+}
+
+.done {
+	text-decoration: line-through;
+}
