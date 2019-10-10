@@ -1,6 +1,50 @@
 let recipeArr = []; // array used to store the response from the api
 
 /**
+ * function to handle clicks on the modal
+ */
+const clickModal = () => {
+  // Get the modal
+  const modal = document.getElementById('modal');
+
+  // when the user clicks the close button in the modal, close modal
+  $('#modal-button').click(() => {
+    $('#modal').attr('style', 'display: none');
+  });
+
+  // when the user clicks anywhere outside of the modal, close modal
+  window.onclick = e => {
+    if (e.target == modal) {
+      $('#modal').attr('style', 'display: none');
+    }
+  };
+};
+
+/**
+ * function to render the modal
+ */
+const renderModal = () => {
+  const modalFade = $('<div>', { id: 'modal' });
+  const modalDiaglogue = $('<div>', { class: 'modal-dialog' });
+  const modalContent = $('<div>', { class: 'modal-content' });
+  const modalHeader = $('<div>', { class: 'modal-header' });
+  const modalTitle = $('<h5>', { class: 'modal-title' }).text('Warning');
+  const modalBody = $('<div>', { class: 'modal-body' }).text('There are no isntructions for this recipe.');
+  const modalFooter = $('<div>', { class: 'modal-footer' });
+  const button = $('<button>', { class: 'btn btn-warning', id: 'modal-button' }).text('Close');
+
+  $('#search-results').prepend(modalFade);
+  modalFade.append(modalDiaglogue);
+  modalDiaglogue.append(modalContent);
+  modalContent.append(modalHeader, modalBody, modalFooter);
+  modalHeader.append(modalTitle);
+  modalFooter.append(button);
+
+  // listens for clicks on the modal
+  clickModal();
+};
+
+/**
  * function to add the class 'done' which changes the text to be crossed out
  * when the checkbox is clicked
  * @param {object} checkbox the html element input type=checkbox
@@ -33,11 +77,62 @@ const renderIngredients = (ingredient, parentElement) => {
   $('#' + parentElement).append(li);
   li.append(checkbox);
   li.append(p);
-
-  // TODO: image title and images, append text after the checkbox
 };
 
-const getRecipeFromArr = (arr, recipeId) => {
+/**
+ * function to parse the instructions and render a <li> for each instruction
+ * @param {string} instructions the instruction string from the getRecipeById api call
+ * @param {string} elementName the id or string of the element
+ */
+const parseInstructions = (instructions, elementName) => {
+  // split the array on the period and set the result to instructionsArr
+  let instructionsArr = instructions.split('.');
+
+  // loop through the instructions
+  for (let i = 0; i < instructionsArr.length - 1; i++) {
+    // TODO: remove html tags from some results...
+
+    // render instruction
+    renderIngredients(instructionsArr[i], elementName);
+  }
+};
+
+/**
+ * function to parse the ingredients array and render a <li> for each ingredient
+ * @param {array} ingredients the extendedIngredients array to be traversed
+ * @param {string} elementName the id or string of the element
+ */
+const parseIngredients = (ingredients, elementName) => {
+  // loop through each ingredient in the array
+  ingredients.forEach(ingredient => {
+    // render ingredient
+    renderIngredients(ingredient.original, elementName);
+  });
+};
+
+/**
+ * function that renders group headers
+ * @param {string} elementName the id and string of the element
+ */
+const renderGroupDetails = (elementName, recipeName) => {
+  const div = $('<div>', { class: 'mt-3' });
+  const ul = $('<ul>', { class: 'list-group', id: elementName });
+  const ingredientsHeader = $('<li>', { class: 'list-group-item bg-dark mt-3' });
+  const textHeader = $('<p>', { class: 'd-inline text-light' }).text(elementName + ' for ' + recipeName);
+
+  $('#search-results').append(div);
+  div.append(ul);
+  ul.append(ingredientsHeader);
+  ingredientsHeader.append(textHeader);
+};
+
+/**
+ * function to parse out a specific recipe from the array (recipeArr)
+ * matching the given recipeId
+ * @param {array} arr the recipe array to be traversed
+ * @param {number} recipeId the id of the recipe to be searched for
+ */
+const parseRecipeArray = (arr, recipeId) => {
   // loop through recipeArr to find the response using the ID
   for (let i = 0; i < arr.length; i++) {
     // compare the ID of the buttton to the ID of the objects inside recipeArr
@@ -47,29 +142,8 @@ const getRecipeFromArr = (arr, recipeId) => {
   }
 };
 
-const parseIngredients = (arr, elementName) => {
-  // loop through each ingredient in the array
-  arr.forEach(ingredient => {
-    // render ingredient
-    renderIngredients(ingredient.original, elementName);
-  });
-};
-
-const renderDetails = elementName => {
-  const div = $('<div>', { class: 'mt-3' });
-  const ul = $('<ul>', { class: 'list-group', id: elementName });
-  const ingredientsHeader = $('<li>', { class: 'list-group-item bg-dark mt-3' });
-  const textHeader = $('<p>', { class: 'd-inline text-light' }).text(elementName);
-
-  $('#search-results').append(div);
-  div.append(ul);
-  ul.append(ingredientsHeader);
-  ingredientsHeader.append(textHeader);
-};
-
 /**
- * function that grabs the ID from the button clicked and passes that into
- * renderDetailedRecipe to render the detailed recipe information
+ * function
  */
 function clickedRecipeDetails() {
   // clear all search results
@@ -79,19 +153,26 @@ function clickedRecipeDetails() {
   const id = parseInt($(this).attr('id'));
 
   // get the recipe from the recipeArr that matches the id
-  const recipe = getRecipeFromArr(recipeArr, id);
+  const recipe = parseRecipeArray(recipeArr, id);
 
   console.log('recipe clickedRecipeDetails():', recipe);
 
   const a = 'Ingredients';
-  const b = 'Instructions';
 
   // render the groups
-  renderDetails(a);
-  renderDetails(b);
+  renderGroupDetails(a, recipe.title);
 
   // render the ingredients passing in the recipe's extendedIngredients
   parseIngredients(recipe.extendedIngredients, a);
+
+  if (!recipe.instructions) {
+    renderModal();
+  } else {
+    const b = 'Instructions';
+    renderGroupDetails(b, recipe.title);
+
+    parseInstructions(recipe.instructions, b);
+  }
 }
 
 /**
@@ -187,10 +268,10 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
 /**
  * function to search spoonacular's api for recipes that match the searchTerm
  * @param {string} searchTerm the search term to search the api (ex: ice cream, cheese)
- * @param {integer} limit the number of results returned from the request
+ * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipe = (searchTerm, limit = 5, apiKey = SPOONACULAR_API_KEY) => {
+const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey;
 
@@ -215,5 +296,5 @@ window.onload = () => {
   $('#search-button').click(getInput);
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
 
-  //   getRecipeById(822254); // just a test
+  //   getRecipeById(215435); // just a test
 };
