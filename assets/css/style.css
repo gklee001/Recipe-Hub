@@ -14,12 +14,6 @@ img {
   z-index: 1;
 }
 
-#modal {
-  z-index: 5;
-  top: 50;
-  left: 50;
-}
-
 /* The Modal (background) */
 #modal {
   position: fixed; /* Stay in place */

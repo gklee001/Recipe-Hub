@@ -227,6 +227,50 @@ const getInput = () => {
 };
 
 /**
+ * function to get similar recipes
+ * @param {string} id the id of the recipe
+ * @param {number} limit the number of results returned from the request
+ * @param {string} apiKey the API key used to access spoonacular api
+ */
+const getSimilarRecipeId = (id, limit = 5, apiKey = SPOONACULAR_API_KEY) => {
+  // the url past to the request header
+  const url = 'https://api.spoonacular.com/recipes/' + id + '/similar?number=' + limit + '&apiKey=' + apiKey;
+
+  // send a GET request to the recipe summary endpoint
+  // https://spoonacular.com/food-api/docs#Get-Similar-Recipes
+  $.ajax({
+    url,
+    method: 'GET'
+  })
+    .then(res => {
+      return res;
+    })
+    .catch(err => console.log('Error occured searching for ID: ' + ' ' + err));
+};
+
+/**
+ * function to grab the the summary of the recipe. returns the id,
+ * title, and summary of the recipe
+ * @param {string} id the id of the recipe
+ * @param {string} apiKey the API key used to access spoonacular api
+ */
+const getRecipeSummary = (id, apiKey = SPOONACULAR_API_KEY) => {
+  // the url past to the request header
+  const url = 'https://api.spoonacular.com/recipes/' + id + '/summary?apiKey=' + apiKey;
+
+  // send a GET request to the recipe summary endpoint
+  // https://spoonacular.com/food-api/docs#Summarize-Recipe
+  $.ajax({
+    url,
+    method: 'GET'
+  })
+    .then(res => {
+      return res;
+    })
+    .catch(err => console.log('Error occured searching for ID: ' + ' ' + err));
+};
+
+/**
  * function to search spoonacular's api for the recipe instruction base
  * on the id of the recipe to get the detailed recipe instructions such
  * as the step-by-step instructions on how to prepare the recipe and
@@ -236,7 +280,7 @@ const getInput = () => {
  */
 const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
-  const url = 'https://api.spoonacular.com/recipes/' + id + '/information?includeNutrition=false' + '&apiKey=' + apiKey;
+  const url = 'https://api.spoonacular.com/recipes/' + id + '/information?includeNutrition=true' + '&apiKey=' + apiKey;
 
   // send a GET request to the detailed recipe endpoint
   // (https://spoonacular.com/food-api/docs#Get-Recipe-Information)
@@ -274,7 +318,7 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
 const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey;
-
+  console.log('url :', url);
   // send a GET request to the search endpoint
   // (https://spoonacular.com/food-api/docs#Search-Recipes)
   $.ajax({
@@ -296,5 +340,7 @@ window.onload = () => {
   $('#search-button').click(getInput);
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
 
-  //   getRecipeById(215435); // just a test
+  // testing endpoints
+  //   getRecipeSummary(215435);
+  getSimilarRecipeId(215435);
 };
