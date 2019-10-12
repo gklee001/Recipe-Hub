@@ -58,7 +58,7 @@ const renderSearchBar = () => {
   const input = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: 'Enter the ingredient(s)' });
   const divInput = $('<div>', { class: 'input-group-append' });
   const button = $('<button>', { class: 'btn btn-dark', id: 'ingredient-search-button', type: 'button' }).text('Search');
-  const p = $('<p>', { class: 'text-muted font-italic mx-2' }).text('Seperate ingredients by a space when searching with multiple');
+  const p = $('<p>', { class: 'text-muted font-italic mx-2 mt-3 mb-1' }).text('Seperate ingredients by a space when searching with multiple.');
 
   // append elements
   $('.modal-body').append(divGroup);
@@ -329,6 +329,9 @@ function clickedRecipeDetails() {
   else {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
+
+    // empty footer
+    $('#footer').empty();
   }
 }
 
@@ -442,7 +445,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
           // render the recipe using the id
           getRecipeById(recipe.id);
         });
-        renderLoadButton(0);
+        renderLoadButton(1);
       }
     })
     .catch(err => console.log('Error occured searching for recipes with ingredients(s): ' + ingredients + ' ' + err));
@@ -471,6 +474,7 @@ const getRandomRecipe = (limit = 5, apiKey = SPOONACULAR_API_KEY) => {
         // render the recipe using the id
         getRecipeById(recipe.id);
       });
+      renderLoadButton(2);
     })
     .catch(err => console.log('Error occured searching for a random recipe: ' + err));
 };
@@ -481,7 +485,7 @@ const getRandomRecipe = (limit = 5, apiKey = SPOONACULAR_API_KEY) => {
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getSimilarRecipeId = (id, limit = 5, apiKey = SPOONACULAR_API_KEY) => {
+const getSimilarRecipeId = (id, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   clearSearchResults();
 
   // the url past to the request header
@@ -497,7 +501,7 @@ const getSimilarRecipeId = (id, limit = 5, apiKey = SPOONACULAR_API_KEY) => {
       res.forEach(recipe => {
         getRecipeById(recipe.id);
       });
-      // console.log(res);
+      renderLoadButton(3);
     })
     .catch(err => console.log('Error occured searching for similar recipes with ID: ' + id + ' ' + err));
 };
@@ -566,8 +570,9 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
 
 /**
  * function to render the load button in the footer
+ * @param {number} num a number indicating which api call the load button will change
  */
-const renderLoadButton = isRecipe => {
+const renderLoadButton = num => {
   // create the element
   const button = $('<button>', { class: 'btn btn-dark w-100', id: 'load-button' }).text('Load More');
 
@@ -576,8 +581,21 @@ const renderLoadButton = isRecipe => {
 
   // attach click listeners
   $('#load-button').click(() => {
-    // call getRecipe
-    isRecipe ? getRecipe(currentSearchTerm, (requestOffset += requestLimit)) : getRecipeByIngredients(currentSearchTerm, (requestLimit += 3));
+    // switch statement to check which case the load button will do when clicked
+    switch (num) {
+      case 0:
+        getRecipe(currentSearchTerm, (requestOffset += requestLimit));
+        break;
+      case 1:
+        getRecipeByIngredients(currentSearchTerm, (requestLimit += MAX_REQUEST_LIMIT));
+        break;
+      case 2:
+        getRandomRecipe();
+        break;
+      case 3:
+        getSimilarRecipeId(currentRecipe.id, (requestLimit += MAX_REQUEST_LIMIT));
+        break;
+    }
 
     // empty footer
     $('#footer').empty();
@@ -609,7 +627,7 @@ const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, api
           // call getRecipeById passing in the id from the response
           getRecipeById(recipe.id);
         });
-        renderLoadButton(1);
+        renderLoadButton(0);
       }
     })
     .catch(err => console.log('Error occured searching for ' + searchTerm + ' ' + err));
@@ -631,6 +649,9 @@ window.onload = () => {
   // listen to click for the random recipe button
   $('#random-button').click(() => {
     getRandomRecipe();
+
+    // clear the footer
+    $('#footer').empty();
   });
 
   // listen for clicks on the search-by-ingredient dropdown link
@@ -651,5 +672,7 @@ window.onload = () => {
   // listen for clicks on 'view similar recipes'
   $(document).on('click', '#similar-button', () => {
     getSimilarRecipeId(currentRecipe.id);
+    // clear the footer
+    $('#footer').empty();
   });
 };
