@@ -37,6 +37,9 @@
                 <li class="nav-item">
                     <button class="btn btn-link" href="" id="random-button">Random Recipes</button>
                 </li>
+                <li class="nav-item">
+                    <button class="btn btn-link" href="" id="search-by-ingredient">Search by Ingredient</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -44,21 +47,11 @@
     <div class="container">
         <!-- search bar -->
         <div class="input-group mt-5">
-            <input type="text" class="form-control"
-                placeholder="Search a recipe (note: seperate ingredients by spaces when searching for recipes via ingredients)" />
+            <input type="text" class="form-control" id="regular-search" placeholder="Search a recipe" />
             <div class="input-group-append">
-                <div class="btn-group">
-                    <button class="btn btn-dark" id="search-button" type="button">
-                        Search
-                    </button>
-                    <button type="button" class="btn btn-sm btn-dark dropdown-toggle dropdown-toggle-split"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="" id="search-by-ingredient">Search by Ingredient</a>
-                    </div>
-                </div>
+                <button class="btn btn-dark" id="search-button" type="button">
+                    Search
+                </button>
             </div>
         </div>
 
