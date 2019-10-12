@@ -191,7 +191,7 @@ const renderRecipeInfo = recipe => {
 
   // column 1 (the image)
   const col1 = $('<div>', { class: 'col-md-4' });
-  const img = $('<img>', { src: recipe.image, class: 'float-left mr-3 unsplash' });
+  const img = $('<img>', { src: api2(), class: 'float-left mr-3 unsplash' });
 
 
   // column 2 (the recipe information)
@@ -270,23 +270,20 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
   }
-  api2();
+
 }
 
 //adding ajax for second api, once RecipeDetails is clicked, created function
 function api2() {
   $.ajax({
-    url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take + "&count=1",
+    url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take,
     method: "GET"
   })
 
     .then(function (image) {
-      console.log(image);
-      console.log(image.results[0].urls.full);
-      $(".unsplash").attr("src", image.results[0].urls.full);
+      $(".unsplash").attr("src", image.results[0].urls.thumb);
     }
     )
-  console.log(take);
 
 
   //end of ajax for second api---------------------------->
