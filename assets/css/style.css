@@ -51,3 +51,8 @@ body {
 .done {
 	text-decoration: line-through;
 }
+
+.unsplash{
+	height: 152px;
+	width: 230px;
+}
