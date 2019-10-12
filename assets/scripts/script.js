@@ -269,11 +269,11 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
   }
+  api2();
+}
 
-
-
-
-  //adding ajax for second api, once RecipeDetails is clicked
+//adding ajax for second api, once RecipeDetails is clicked, created function
+function api2() {
   $.ajax({
     url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take,
     method: "GET"
@@ -290,7 +290,6 @@ function clickedRecipeDetails() {
 
   //end of ajax for second api---------------------------->
 }
-
 
 
 /**
