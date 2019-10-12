@@ -1,5 +1,10 @@
 let recipeArr = []; // array used to store the response from the api
 let currentRecipe; // stores current recipe
+
+let requestOffset = 0;
+let requestLimit = 3;
+let currentSearchTerm = '';
+
 //variable for second api
 let take;
 
@@ -21,7 +26,7 @@ const getIngredientsFromInput = () => {
 
   // check if .form-control is empty and alert user
   if (!$('#ingredients-search').val()) {
-    alert('You must enter something to search...');
+    renderModal('Warning', 'You must enter something to search...');
   }
 
   // else... user has entered text into the search bar
@@ -179,6 +184,7 @@ const addCheckboxClickListener = (checkbox, div) => {
 /**
  * function to render the detailed recipe information
  * @param {object} ingredient the response object from the search endpoint from Spoonacular's API
+ * @param {object} parentElement the element that this appends to
  */
 const renderIngredients = (ingredient, parentElement) => {
   const li = $('<li>', { class: 'list-group-item' });
@@ -239,6 +245,10 @@ const renderGroupDetails = (elementName, recipeName) => {
   ingredientsHeader.append(textHeader);
 };
 
+/**
+ * function that renders the detailed recipe information
+ * @param {object} recipe the response object from the search endpoint from Spoonacular's API
+ */
 const renderRecipeInfo = recipe => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
@@ -254,10 +264,6 @@ const renderRecipeInfo = recipe => {
   const col2 = $('<div>', { class: 'col-md-8' });
   const cardBody = $('<div>', { class: 'card-body' });
   const cardTitle = $('<h5>', { class: 'card-title' }).text('Prep. Time: ' + recipe.readyInMinutes + ' minute(s) - Serving Size: ' + recipe.servings);
-  // const calories = $('<p>', { class: 'card-text' }).text('Calories: ' + recipe.nutrition.nutrients[0].amount + recipe.nutrition.nutrients[0].unit);
-  // const fat = $('<p>', { class: 'card-text' }).text('Fat: ' + recipe.nutrition.nutrients[1].amount + recipe.nutrition.nutrients[2].unit);
-  // const carbs = $('<p>', { class: 'card-text' }).text('Carbs: ' + recipe.nutrition.nutrients[3].amount + recipe.nutrition.nutrients[3].unit);
-  // const protein = $('<p>', { class: 'card-text' }).text('Protein: ' + recipe.nutrition.nutrients[8].amount + recipe.nutrition.nutrients[0].unit);
   const nutritionButton = $('<button>', { class: 'btn btn-link p-0 d-block', id: 'nutrition-button' }).text('View Nutritional Info');
   const similarRecipes = $('<button>', { class: 'btn btn-link p-0 d-block', id: 'similar-button' }).text('View Similar Recipes');
 
@@ -385,10 +391,12 @@ const renderSearchResults = (recipe, ingredients) => {
 const getInput = () => {
   // empty out array
   recipeArr = [];
+  searchTerm = '';
+  offset = 0;
 
   // check if search input is empty and alert user
   if (!$('#regular-search').val()) {
-    alert('You must enter something to search...');
+    renderModal('Warning', 'You must enter something to search...');
   }
 
   // else... user has entered text into the search bar
@@ -411,12 +419,24 @@ const getInput = () => {
     // clear text from input
     $('#regular-search').val('');
 
+    // update the currentSearchTerm
+    currentSearchTerm = input;
 
     // get the recipe IDs
     getRecipe(input);
+
+    // clear the footer
+    $('#footer').empty();
   }
 };
 
+/**
+ * function that returns recipes that match the ingredients searched
+ * @param {string} ingredients used to search recipes that contain these ingredients
+ * @param {number} limit the max number of results returned
+ * @param {boolean} isPantry true returns recipes containing common pantry ingredients
+ * @param {string} apiKey the API key used to access spoonacular api
+ */
 const getRecipeByIngredients = (ingredients, limit = 5, isPantry = false, apiKey = SPOONACULAR_API_KEY) => {
   $('#modal').remove(); // delete modal
 
@@ -560,14 +580,34 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
 };
 
 /**
+ * function to render the load button in the footer
+ */
+const renderLoadButton = () => {
+  // create the element
+  const button = $('<button>', { class: 'btn btn-dark w-100', id: 'load-button' }).text('Load More');
+
+  // append the element to the html
+  $('#footer').append(button);
+
+  // attach click listeners
+  $('#load-button').click(() => {
+    // call getRecipe
+    getRecipe(currentSearchTerm, (requestOffset += requestLimit));
+
+    // empty footer
+    $('#footer').empty();
+  });
+};
+
+/**
  * function to search spoonacular's api for recipes that match the searchTerm
  * @param {string} searchTerm the search term to search the api (ex: ice cream, cheese)
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
+const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
-  const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey;
+  const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey + '&offset=' + offset;
   // send a GET request to the search endpoint
   // (https://spoonacular.com/food-api/docs#Search-Recipes)
   $.ajax({
@@ -584,6 +624,7 @@ const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
           // call getRecipeById passing in the id from the response
           getRecipeById(recipe.id);
         });
+        renderLoadButton();
       }
     })
     .catch(err => console.log('Error occured searching for ' + searchTerm + ' ' + err));
