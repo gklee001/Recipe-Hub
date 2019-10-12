@@ -1,8 +1,12 @@
 let recipeArr = []; // array used to store the response from the api
 let currentRecipe; // stores current recipe
+
 let requestOffset = 0;
 let requestLimit = 3;
 let currentSearchTerm = '';
+
+//variable for second api
+let take;
 
 /**
  * formats the string by replacing spaces with commas and a plus
@@ -253,7 +257,8 @@ const renderRecipeInfo = recipe => {
 
   // column 1 (the image)
   const col1 = $('<div>', { class: 'col-md-4' });
-  const img = $('<img>', { src: recipe.image, class: 'float-left mr-3' });
+  const img = $('<img>', { src: api2(), class: 'float-left mr-3 unsplash' });
+
 
   // column 2 (the recipe information)
   const col2 = $('<div>', { class: 'col-md-8' });
@@ -327,7 +332,25 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
   }
+
 }
+
+//adding ajax for second api, once RecipeDetails is clicked, created function
+function api2() {
+  $.ajax({
+    url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take,
+    method: "GET"
+  })
+
+    .then(function (image) {
+      $(".unsplash").attr("src", image.results[0].urls.thumb);
+    }
+    )
+
+
+  //end of ajax for second api---------------------------->
+}
+
 
 /**
  * function to render search results
@@ -386,9 +409,17 @@ const getInput = () => {
       .val()
       .trim();
 
+
+    //second api call unsplash api variable
+    take = input;
+
+    // clear text from .form-control
+    $('.form-control').val('');
+
     // clear text from input
     $('#regular-search').val('');
 
+    // update the currentSearchTerm
     currentSearchTerm = input;
 
     // get the recipe IDs
