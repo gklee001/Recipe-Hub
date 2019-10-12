@@ -1,12 +1,18 @@
-let recipeArr = []; // array used to store the response from the api
+let recipeArr; // array used to store the response from the api
 let currentRecipe; // stores current recipe
+const MAX_REQUEST_LIMIT = 3;
+let requestOffset;
+let requestLimit;
+let currentSearchTerm;
 
-let requestOffset = 0;
-let requestLimit = 3;
-let currentSearchTerm = '';
-
-//variable for second api
-let take;
+// function to clear global counters
+const resetGlobalCounters = () => {
+  recipeArr = [];
+  currentRecipe = '';
+  currentSearchTerm = '';
+  requestOffset = 0;
+  requestLimit = MAX_REQUEST_LIMIT;
+};
 
 /**
  * formats the string by replacing spaces with commas and a plus
@@ -21,8 +27,7 @@ const formatInputIngredients = input => {
  * is is searching for recipes by ingredients
  */
 const getIngredientsFromInput = () => {
-  // empty out array
-  recipeArr = [];
+  resetGlobalCounters();
 
   // check if .form-control is empty and alert user
   if (!$('#ingredients-search').val()) {
@@ -37,14 +42,16 @@ const getIngredientsFromInput = () => {
     // clear previous search results
     $('#search-results').empty();
 
+    // update currentSearchTerm with formatted ingredients
+    currentSearchTerm = formatInputIngredients(input);
+
     // format the ingredients and call the getRecipeByIngredients
-    getRecipeByIngredients(formatInputIngredients(input));
+    getRecipeByIngredients(currentSearchTerm);
+    $('#footer').empty();
   }
 };
 
-/**
- * function to render the search bar in the modal
- */
+// function to render the search bar in the modal (used to search for recipes based on ingredients)
 const renderSearchBar = () => {
   // create elements
   const divGroup = $('<div>', { class: 'input-group' });
@@ -78,9 +85,7 @@ const renderNutritionRow = (amount, percent) => {
   tr.append(amt, perc);
 };
 
-/**
- * function to render the table and append it to the modal
- */
+// function to render the table and append it to the modal
 const renderNutritionTable = () => {
   const table = $('<table>', { class: 'table bg-white' });
   const thead = $('<thead>');
@@ -110,17 +115,13 @@ const parseNutritionInfo = recipe => {
   });
 };
 
-/**
- * function to prevent page reload and empty #search-results
- */
+// function to prevent page reload and empty #search-results
 const clearSearchResults = () => {
   event.preventDefault();
   $('#search-results').empty();
 };
 
-/**
- * function to handle clicks on the modal to show/hide it
- */
+// function to handle clicks on the modal to show/hide it
 const clickModal = () => {
   // Get the modal
   const modal = document.getElementById('modal');
@@ -138,9 +139,7 @@ const clickModal = () => {
   };
 };
 
-/**
- * function to render the modal
- */
+// function to render the modal
 const renderModal = (title, message = '') => {
   const modalFade = $('<div>', { id: 'modal' });
   const modalDiaglogue = $('<div>', { class: 'modal-dialog' });
@@ -259,7 +258,6 @@ const renderRecipeInfo = recipe => {
   const col1 = $('<div>', { class: 'col-md-4' });
   const img = $('<img>', { src: api2(), class: 'float-left mr-3 unsplash' });
 
-
   // column 2 (the recipe information)
   const col2 = $('<div>', { class: 'col-md-8' });
   const cardBody = $('<div>', { class: 'card-body' });
@@ -332,25 +330,19 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
   }
-
 }
 
 //adding ajax for second api, once RecipeDetails is clicked, created function
 function api2() {
   $.ajax({
-    url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take,
-    method: "GET"
-  })
-
-    .then(function (image) {
-      $(".unsplash").attr("src", image.results[0].urls.thumb);
-    }
-    )
-
+    url: 'https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=' + currentSearchTerm,
+    method: 'GET'
+  }).then(function(image) {
+    $('.unsplash').attr('src', image.results[0].urls.thumb);
+  });
 
   //end of ajax for second api---------------------------->
 }
-
 
 /**
  * function to render search results
@@ -385,14 +377,9 @@ const renderSearchResults = (recipe, ingredients) => {
   cardBody.append(cardTitle, cardText, button);
 };
 
-/**
- * function to grab what the user searches for and call getRecipe to render the search results
- */
+// function to grab what the user searches for and call getRecipe to render the search results
 const getInput = () => {
-  // empty out array
-  recipeArr = [];
-  searchTerm = '';
-  offset = 0;
+  resetGlobalCounters();
 
   // check if search input is empty and alert user
   if (!$('#regular-search').val()) {
@@ -409,18 +396,14 @@ const getInput = () => {
       .val()
       .trim();
 
-
     //second api call unsplash api variable
-    take = input;
+    currentSearchTerm = input;
 
     // clear text from .form-control
     $('.form-control').val('');
 
     // clear text from input
     $('#regular-search').val('');
-
-    // update the currentSearchTerm
-    currentSearchTerm = input;
 
     // get the recipe IDs
     getRecipe(input);
@@ -437,8 +420,9 @@ const getInput = () => {
  * @param {boolean} isPantry true returns recipes containing common pantry ingredients
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipeByIngredients = (ingredients, limit = 5, isPantry = false, apiKey = SPOONACULAR_API_KEY) => {
+const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = false, apiKey = SPOONACULAR_API_KEY) => {
   $('#modal').remove(); // delete modal
+  clearSearchResults();
 
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/findByIngredients?ingredients=' + ingredients + '&number=' + limit + '&apiKey=' + apiKey + '&ignorePantry=' + isPantry;
@@ -458,6 +442,7 @@ const getRecipeByIngredients = (ingredients, limit = 5, isPantry = false, apiKey
           // render the recipe using the id
           getRecipeById(recipe.id);
         });
+        renderLoadButton(0);
       }
     })
     .catch(err => console.log('Error occured searching for recipes with ingredients(s): ' + ingredients + ' ' + err));
@@ -582,7 +567,7 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
 /**
  * function to render the load button in the footer
  */
-const renderLoadButton = () => {
+const renderLoadButton = isRecipe => {
   // create the element
   const button = $('<button>', { class: 'btn btn-dark w-100', id: 'load-button' }).text('Load More');
 
@@ -592,7 +577,7 @@ const renderLoadButton = () => {
   // attach click listeners
   $('#load-button').click(() => {
     // call getRecipe
-    getRecipe(currentSearchTerm, (requestOffset += requestLimit));
+    isRecipe ? getRecipe(currentSearchTerm, (requestOffset += requestLimit)) : getRecipeByIngredients(currentSearchTerm, (requestLimit += 3));
 
     // empty footer
     $('#footer').empty();
@@ -624,13 +609,15 @@ const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, api
           // call getRecipeById passing in the id from the response
           getRecipeById(recipe.id);
         });
-        renderLoadButton();
+        renderLoadButton(1);
       }
     })
     .catch(err => console.log('Error occured searching for ' + searchTerm + ' ' + err));
 };
 
 window.onload = () => {
+  resetGlobalCounters();
+
   // listen for click on the search button
   $('#search-button').click(() => {
     getInput();
