@@ -4,6 +4,62 @@ let currentRecipe; // stores current recipe
 let take;
 
 /**
+ * formats the string by replacing spaces with commas and a plus
+ * @param {string} input the string to be formatted
+ */
+const formatInputIngredients = input => {
+  return input.replace(/ /g, ',+');
+};
+
+/**
+ * function to retrieve input from the search bar where the user
+ * is is searching for recipes by ingredients
+ */
+const getIngredientsFromInput = () => {
+  // empty out array
+  recipeArr = [];
+
+  // check if .form-control is empty and alert user
+  if (!$('#ingredients-search').val()) {
+    alert('You must enter something to search...');
+  }
+
+  // else... user has entered text into the search bar
+  else {
+    // store search in input
+    const input = $('#ingredients-search').val();
+
+    // clear previous search results
+    $('#search-results').empty();
+
+    // format the ingredients and call the getRecipeByIngredients
+    getRecipeByIngredients(formatInputIngredients(input));
+  }
+};
+
+/**
+ * function to render the search bar in the modal
+ */
+const renderSearchBar = () => {
+  // create elements
+  const divGroup = $('<div>', { class: 'input-group' });
+  const input = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: 'Enter the ingredient(s)' });
+  const divInput = $('<div>', { class: 'input-group-append' });
+  const button = $('<button>', { class: 'btn btn-dark', id: 'ingredient-search-button', type: 'button' }).text('Search');
+  const p = $('<p>', { class: 'text-muted font-italic mx-2' }).text('Seperate ingredients by a space when searching with multiple');
+
+  // append elements
+  $('.modal-body').append(divGroup);
+  divGroup.append(input, divInput, p);
+  divInput.append(button);
+
+  // attach click listener
+  $('#ingredient-search-button').click(() => {
+    getIngredientsFromInput();
+  });
+};
+
+/**
  * function to render the nutritional values
  * @param {string} amount the name and amount of the nutrient
  * @param {string} percent the percentage of the nutrient's daily values
@@ -326,19 +382,15 @@ const renderSearchResults = (recipe, ingredients) => {
   cardBody.append(cardTitle, cardText, button);
 };
 
-const formatInputIngredients = input => {
-  return input.replace(/ /g, ',+');
-};
-
 /**
  * function to grab what the user searches for and call getRecipe to render the search results
  */
-const getInput = isSearchingIngredients => {
+const getInput = () => {
   // empty out array
   recipeArr = [];
 
-  // check if .form-control is empty and alert user
-  if (!$('.form-control').val()) {
+  // check if search input is empty and alert user
+  if (!$('#regular-search').val()) {
     alert('You must enter something to search...');
   }
 
@@ -347,10 +399,11 @@ const getInput = isSearchingIngredients => {
     // clear any previous search results
     clearSearchResults();
 
-    // store search in input
-    const input = $('.form-control')
+    // store and clean search in input
+    const input = $('#regular-search')
       .val()
       .trim();
+
 
     //second api call unsplash api variable
     take = input;
@@ -358,13 +411,18 @@ const getInput = isSearchingIngredients => {
     // clear text from .form-control
     $('.form-control').val('');
 
-    // if isSearchingIngredients is false, call getRecipe() otherwise call getRecipeByIngredients
-    // isSearchingIngredients === false ? getRecipe(input) : getRecipeByIngredients(input);
-    isSearchingIngredients === false ? getRecipe(input) : getRecipeByIngredients(formatInputIngredients(input));
+    // clear text from input
+    $('#regular-search').val('');
+
+
+    // get the recipe IDs
+    getRecipe(input);
   }
 };
 
 const getRecipeByIngredients = (ingredients, limit = 5, isPantry = false, apiKey = SPOONACULAR_API_KEY) => {
+  $('#modal').remove(); // delete modal
+
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/findByIngredients?ingredients=' + ingredients + '&number=' + limit + '&apiKey=' + apiKey + '&ignorePantry=' + isPantry;
   // send a GET request to the recipe summary endpoint
@@ -374,11 +432,16 @@ const getRecipeByIngredients = (ingredients, limit = 5, isPantry = false, apiKey
     method: 'GET'
   })
     .then(res => {
-      // loop through each recipe from the response
-      res.forEach(recipe => {
-        // render the recipe using the id
-        getRecipeById(recipe.id);
-      });
+      // check to see if response length is 0
+      if (!res.length) {
+        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+      } else {
+        // loop through each recipe from the response
+        res.forEach(recipe => {
+          // render the recipe using the id
+          getRecipeById(recipe.id);
+        });
+      }
     })
     .catch(err => console.log('Error occured searching for recipes with ingredients(s): ' + ingredients + ' ' + err));
 };
@@ -515,11 +578,16 @@ const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
     method: 'GET'
   })
     .then(res => {
-      // loop through the responses
-      res.results.forEach(recipe => {
-        // call getRecipeById passing in the id from the response
-        getRecipeById(recipe.id);
-      });
+      // check to see if response length is 0
+      if (!res.results.length) {
+        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+      } else {
+        // loop through the responses
+        res.results.forEach(recipe => {
+          // call getRecipeById passing in the id from the response
+          getRecipeById(recipe.id);
+        });
+      }
     })
     .catch(err => console.log('Error occured searching for ' + searchTerm + ' ' + err));
 };
@@ -527,12 +595,7 @@ const getRecipe = (searchTerm, limit = 3, apiKey = SPOONACULAR_API_KEY) => {
 window.onload = () => {
   // listen for click on the search button
   $('#search-button').click(() => {
-    getInput(false);
-  });
-
-  // listen for clicks on the search-by-ingredient dropdown link
-  $('#search-by-ingredient').click(() => {
-    getInput(true);
+    getInput();
   });
 
   // listen to click for home button
@@ -545,14 +608,22 @@ window.onload = () => {
     getRandomRecipe();
   });
 
+  // listen for clicks on the search-by-ingredient dropdown link
+  $('#search-by-ingredient').click(() => {
+    renderModal('Search by Ingredients');
+    renderSearchBar();
+  });
+
   // listen for clicks on the 'view detailed recipe' button
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
 
+  // listen for clicks on 'view nutirtion information'
   $(document).on('click', '#nutrition-button', () => {
     renderModal('Nutritional Information');
     parseNutritionInfo(currentRecipe);
   });
 
+  // listen for clicks on 'view similar recipes'
   $(document).on('click', '#similar-button', () => {
     getSimilarRecipeId(currentRecipe.id);
   });
