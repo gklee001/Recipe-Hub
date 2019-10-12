@@ -1,5 +1,7 @@
 let recipeArr = []; // array used to store the response from the api
 let currentRecipe; // stores current recipe
+//variable for second api
+let take;
 
 /**
  * function to render the nutritional values
@@ -267,7 +269,29 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
   }
+
+
+
+
+  //adding ajax for second api, once RecipeDetails is clicked
+  $.ajax({
+    url: "https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=" + take,
+    method: "GET"
+  })
+
+    .then(function (image) {
+      console.log(image);
+      console.log(image.results[0].urls.full);
+      $(".mr-3").attr("src", image.results[0].urls.full);
+    }
+    )
+  console.log(take);
+
+
+  //end of ajax for second api---------------------------->
 }
+
+
 
 /**
  * function to render search results
@@ -327,6 +351,9 @@ const getInput = isSearchingIngredients => {
     const input = $('.form-control')
       .val()
       .trim();
+
+    //second api call unsplash api variable
+    take = input;
 
     // clear text from .form-control
     $('.form-control').val('');
