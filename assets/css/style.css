@@ -53,13 +53,18 @@ body {
 }
 
 tbody tr:nth-child(odd),
-#search-results li:nth-child(odd) {
+#search-results.li:nth-child(odd) {
   background-color: #ebebeb;
-  /* color: #fff; */
+  color: #000;
+}
+
+ul .list-group-item:nth-child(odd) {
+  background-color: #ebebeb;
+  color: #000;
 }
 
 tbody tr:hover,
-ul li:hover {
+ul .list-group-item:hover {
   background-color: #343a40;
   color: #fff;
 }
