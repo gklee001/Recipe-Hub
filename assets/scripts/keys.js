@@ -1,4 +1,4 @@
-const SPOONACULAR_API_KEY = '25b28062cc934d19858b28554eebddb4';
+const SPOONACULAR_API_KEY = '5a0fb3140e144d98b3a23298fceb6bf6';
 
 // John's Keys
 // 3cbf84afc3474e1a86dc5d352e165370
