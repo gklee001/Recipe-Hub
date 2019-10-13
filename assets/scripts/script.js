@@ -287,8 +287,6 @@ const renderRecipeInfo = recipe => {
 
   $('.unsplash').mouseout(function () {
     hoverInterval = clearInterval(hoverInterval);
-    //console.log("hello");
-    //console.log(hoverInterval);
     $('.unsplash').attr('src', recipe.image)
   });
 
