@@ -5,6 +5,7 @@ let requestOffset;
 let requestLimit;
 let currentSearchTerm;
 let unsplashImageArr = [];
+let hoverInterval;
 
 // function to clear global counters
 const resetGlobalCounters = () => {
@@ -278,12 +279,21 @@ const renderRecipeInfo = recipe => {
 
   id = recipe.id;
 
-  $('.unsplash').hover(function () {
-    $('.unsplash').attr('src', randomImageUrl());
+  $('.unsplash').mouseover(function () {
+    hoverInterval = setInterval(function () {
+      $('.unsplash').attr('src', randomImageUrl());
+    }, 1000)
   })
 
-};
+  $('.unsplash').mouseout(function () {
+    hoverInterval = clearInterval(hoverInterval);
+    //console.log("hello");
+    //console.log(hoverInterval);
+    $('.unsplash').attr('src', recipe.image)
+  });
 
+
+};
 /**
  * function to parse out a specific recipe from the array (recipeArr)
  * matching the given recipeId
@@ -344,9 +354,9 @@ function clickedRecipeDetails() {
 }
 
 // function to load the unsplasImageArr with the response
-function getUnsplashImages() {
+function getUnsplashImages(searchTerm = currentSearchTerm, apikey = UNSPLASH_API_KEY) {
   $.ajax({
-    url: 'https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=' + currentSearchTerm,
+    url: 'https://api.unsplash.com/search/photos/?client_id=' + apikey + "&page=1&query=" + searchTerm,
     method: 'GET'
   }).then(function (res) {
     unsplashImageArr = res.results;
@@ -440,6 +450,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
   clearSearchResults();
 
   // the url past to the request header
+
   const url = 'https://api.spoonacular.com/recipes/findByIngredients?ingredients=' + ingredients + '&number=' + limit + '&apiKey=' + apiKey + '&ignorePantry=' + isPantry;
   // send a GET request to the recipe summary endpoint
   // https://spoonacular.com/food-api/docs#Search-Recipes-by-Ingredients
