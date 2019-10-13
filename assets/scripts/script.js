@@ -91,8 +91,8 @@ const renderNutritionTable = () => {
   const table = $('<table>', { class: 'table bg-white' });
   const thead = $('<thead>');
   const tr = $('<tr>');
-  const thAmount = $('<th>', { class: 'font-weight-bold', scope: 'col' }).text('Amount');
-  const thPercent = $('<th>', { class: 'font-weight-bold', scope: 'col' }).text('% Daily Value');
+  const thAmount = $('<th>', { class: 'font-weight-bold text-light', scope: 'col' }).text('Amount');
+  const thPercent = $('<th>', { class: 'font-weight-bold text-light', scope: 'col' }).text('% Daily Value');
 
   const tbody = $('<tbody>', { id: 'nutrition-table' });
 
@@ -149,7 +149,7 @@ const renderModal = (title, message = '') => {
   const modalTitle = $('<h5>', { class: 'modal-title' }).text(title);
   const modalBody = $('<div>', { class: 'modal-body' }).text(message);
   const modalFooter = $('<div>', { class: 'modal-footer' });
-  const button = $('<button>', { class: 'btn btn-warning', id: 'modal-button' }).text('Close');
+  const button = $('<button>', { class: 'btn btn-dark', id: 'modal-button' }).text('Close');
 
   $('#search-results').prepend(modalFade);
   modalFade.append(modalDiaglogue);
@@ -237,7 +237,7 @@ const renderGroupDetails = (elementName, recipeName) => {
   const div = $('<div>', { class: 'mt-3' });
   const ul = $('<ul>', { class: 'list-group', id: elementName });
   const ingredientsHeader = $('<li>', { class: 'list-group-item bg-dark mt-3' });
-  const textHeader = $('<p>', { class: 'd-inline text-light' }).text(elementName + ' for ' + recipeName);
+  const textHeader = $('<p>', { class: 'd-inline text-secondary' }).text(elementName + ' for ' + recipeName);
 
   $('#search-results').append(div);
   div.append(ul);
@@ -252,7 +252,7 @@ const renderGroupDetails = (elementName, recipeName) => {
 const renderRecipeInfo = recipe => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-dark text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<div>', { class: 'card-header bg-dark text-secondary' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)
@@ -278,10 +278,9 @@ const renderRecipeInfo = recipe => {
 
   id = recipe.id;
 
-  $('.unsplash').hover(function () {
+  $('.unsplash').hover(function() {
     $('.unsplash').attr('src', randomImageUrl());
-  })
-
+  });
 };
 
 /**
@@ -340,7 +339,6 @@ function clickedRecipeDetails() {
     // empty footer
     $('#footer').empty();
   }
-
 }
 
 // function to load the unsplasImageArr with the response
@@ -348,9 +346,8 @@ function getUnsplashImages() {
   $.ajax({
     url: 'https://api.unsplash.com/search/photos/?client_id=5f075f2a36d998d71e48a195d5b190a4c0b4194471f1a8108f42370aa300ce04&page=1&query=' + currentSearchTerm,
     method: 'GET'
-  }).then(function (res) {
+  }).then(function(res) {
     unsplashImageArr = res.results;
-
   });
 }
 
@@ -367,7 +364,7 @@ function randomImageUrl() {
 const renderSearchResults = (recipe, ingredients) => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-dark text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<div>', { class: 'card-header bg-dark text-secondary' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)
@@ -586,7 +583,7 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
  */
 const renderLoadButton = num => {
   // create the element
-  const button = $('<button>', { class: 'btn btn-dark w-100', id: 'load-button' }).text('Load More');
+  const button = $('<button>', { class: 'btn btn-dark text-secondary w-100', id: 'load-button' }).text('Load More');
 
   // append the element to the html
   $('#footer').append(button);

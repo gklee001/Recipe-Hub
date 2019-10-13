@@ -1,0 +1,23 @@
+{
+  "name": "recipe_sluts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sass": "node-sass -w scss/ -o assets/css --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doanja/Project-1.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/doanja/Project-1/issues"
+  },
+  "homepage": "https://github.com/doanja/Project-1#readme",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "node-sass": "^4.12.0"
+  }
+}
