@@ -1,2 +1,3 @@
 .vscode
-.assets/scripts/keys.js
+assets/scripts/keys.js
+node_modules
