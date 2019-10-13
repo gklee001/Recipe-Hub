@@ -1,10 +1,24 @@
+// light mode
+$primary-color-light: #6f91a1;
+$secondary-color-light: #d8d8d8;
+$text-color-black: #000;
+$text-color-white: #fff;
+
+$theme-colors: (
+  'dark': $primary-color-light,
+  'light': $text-color-black,
+  'secondary': $text-color-white
+);
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+
 body {
   background: url('../images/papyrus-dark.png');
 }
 
 #logo {
-  width: 12%;
-  height: 12%;
+  width: 3rem;
+  height: 3rem;
 }
 
 .nav-item .btn-link {
@@ -54,18 +68,18 @@ body {
 
 tbody tr:nth-child(odd),
 #search-results.li:nth-child(odd) {
-  background-color: #ebebeb;
+  background-color: $secondary-color-light;
   color: #000;
 }
 
 ul .list-group-item:nth-child(odd) {
-  background-color: #ebebeb;
+  background-color: $secondary-color-light;
   color: #000;
 }
 
 tbody tr:hover,
 ul .list-group-item:hover {
-  background-color: #343a40;
+  background-color: $primary-color-light;
   color: #fff;
 }
 
@@ -74,6 +88,6 @@ ul .list-group-item:hover {
 }
 
 /* .unsplash{
-	height: 152px;
-	width: 230px;
-} */
+      height: 152px;
+      width: 230px;
+  } */
