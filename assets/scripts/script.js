@@ -282,7 +282,7 @@ const renderRecipeInfo = recipe => {
   $('.unsplash').mouseover(function () {
     hoverInterval = setInterval(function () {
       $('.unsplash').attr('src', randomImageUrl());
-    }, 1000)
+    }, 1500)
   })
 
   $('.unsplash').mouseout(function () {
