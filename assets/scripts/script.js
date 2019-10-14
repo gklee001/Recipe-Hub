@@ -106,8 +106,8 @@ const renderNutritionTable = () => {
   const table = $('<table>', { class: 'table bg-white mb-0' });
   const thead = $('<thead>');
   const tr = $('<tr>');
-  const thAmount = $('<th>', { class: 'font-weight-bold text-secondary', scope: 'col' }).text('Amount');
-  const thPercent = $('<th>', { class: 'font-weight-bold text-secondary', scope: 'col' }).text('% Daily Value');
+  const thAmount = $('<th>', { class: 'font-weight-bold text-primary', scope: 'col' }).text('Amount');
+  const thPercent = $('<th>', { class: 'font-weight-bold text-primary', scope: 'col' }).text('% Daily Value');
 
   const tbody = $('<tbody>', { id: 'nutrition-table' });
 
@@ -267,7 +267,7 @@ const renderGroupDetails = (elementName, recipeName) => {
 const renderRecipeInfo = recipe => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<h6>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)
@@ -385,7 +385,7 @@ function randomImageUrl() {
 const renderSearchResults = (recipe, ingredients) => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<h6>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)

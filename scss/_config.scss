@@ -1,7 +1,13 @@
-// set custom colors
-$primary-color: #581845;
-$secondary-color: #d8d8d8;
+// fonts
+@import url('https://fonts.googleapis.com/css?family=Arvo|Lilita+One&display=swap');
 
+$lilita: 'Lilita One', sans-serif;
+$arvo: 'arvo', sans-serif;
+
+// set custom colors
+$primary-color: #183658;
+
+// function to set color to be white or black depending on $color
 @function set-text-color($color) {
   @if (lightness($color) > 40) {
     @return #000;
@@ -14,5 +20,8 @@ $secondary-color: #d8d8d8;
 $theme-colors: (
   'primary': $primary-color,
   'light': set-text-color($primary-color),
-  'dark': #000
+  'dark': lighten($primary-color, 30%)
 );
+
+// set font family
+$font-family-sans-serif: $arvo;
