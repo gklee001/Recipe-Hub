@@ -1,6 +1,10 @@
 @import '_config';
 @import 'node_modules/bootstrap/scss/bootstrap';
 
+h1 {
+  font-family: $lilita;
+}
+
 body {
   background: url('../images/papyrus-dark.png');
 }
@@ -55,21 +59,23 @@ body {
   text-decoration: line-through;
 }
 
+// nutrition info
 tbody tr:nth-child(odd),
 #search-results.li:nth-child(odd) {
-  background-color: lighten($primary-color, 75%);
+  background-color: lighten($primary-color, 80%);
   color: darken($primary-color, 75%);
 }
 
+// inrgredients / instructions
 ul .list-group-item:nth-child(odd) {
-  background-color: lighten($primary-color, 75%);
+  background-color: lighten($primary-color, 80%);
   color: darken($primary-color, 75%);
 }
 
 // table hovering
 tbody tr:hover,
 ul .list-group-item:hover {
-  background-color: lighten($primary-color, 5%);
+  background-color: lighten($primary-color, 10%);
   color: set-text-color($primary-color);
 }
 
