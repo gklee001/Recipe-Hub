@@ -53,23 +53,37 @@ const getIngredientsFromInput = () => {
   }
 };
 
-// function to render the search bar in the modal (used to search for recipes based on ingredients)
-const renderSearchBar = () => {
+/**
+ * function to render the search bar in the modal
+ * @param {string} placeholderTxt the placeholder text to be appended to the searchbar
+ * @param {string} disclaimerTxt the disclaimer text appended to the body of the modal
+ * @param {number} num a number indicating which function to call when search is clicked
+ */
+const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
   // create elements
   const divGroup = $('<div>', { class: 'input-group' });
-  const input = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: 'Enter the ingredient(s)' });
+  const searchBar = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: placeholderTxt });
   const divInput = $('<div>', { class: 'input-group-append' });
-  const button = $('<button>', { class: 'btn btn-dark', id: 'ingredient-search-button', type: 'button' }).text('Search');
-  const p = $('<p>', { class: 'text-muted font-italic mx-2 mt-3 mb-1' }).text('Seperate ingredients by a space when searching with multiple.');
+  const searchButton = $('<button>', { class: 'btn btn-primary', id: 'custom-search-button', type: 'button' }).text('Search');
+  const disclaimer = $('<p>', { class: 'text-muted font-italic mx-2 mt-3 mb-1' }).text(disclaimerTxt);
 
   // append elements
   $('.modal-body').append(divGroup);
-  divGroup.append(input, divInput, p);
-  divInput.append(button);
+  divGroup.append(searchBar, divInput, disclaimer);
+  divInput.append(searchButton);
 
   // attach click listener
-  $('#ingredient-search-button').click(() => {
-    getIngredientsFromInput();
+  $('#custom-search-button').click(() => {
+    // switch statement to check which case the load button will do when clicked
+    switch (num) {
+      case 0:
+        getIngredientsFromInput();
+        break;
+      case 1:
+        // grab input from filters (this is the case for advance filters)
+        console.log('TODO: grab input from filters...');
+        break;
+    }
   });
 };
 
@@ -89,11 +103,11 @@ const renderNutritionRow = (amount, percent) => {
 
 // function to render the table and append it to the modal
 const renderNutritionTable = () => {
-  const table = $('<table>', { class: 'table bg-white' });
+  const table = $('<table>', { class: 'table bg-white mb-0' });
   const thead = $('<thead>');
   const tr = $('<tr>');
-  const thAmount = $('<th>', { class: 'font-weight-bold text-light', scope: 'col' }).text('Amount');
-  const thPercent = $('<th>', { class: 'font-weight-bold text-light', scope: 'col' }).text('% Daily Value');
+  const thAmount = $('<th>', { class: 'font-weight-bold text-secondary', scope: 'col' }).text('Amount');
+  const thPercent = $('<th>', { class: 'font-weight-bold text-secondary', scope: 'col' }).text('% Daily Value');
 
   const tbody = $('<tbody>', { id: 'nutrition-table' });
 
@@ -150,7 +164,7 @@ const renderModal = (title, message = '') => {
   const modalTitle = $('<h5>', { class: 'modal-title' }).text(title);
   const modalBody = $('<div>', { class: 'modal-body' }).text(message);
   const modalFooter = $('<div>', { class: 'modal-footer' });
-  const button = $('<button>', { class: 'btn btn-dark', id: 'modal-button' }).text('Close');
+  const button = $('<button>', { class: 'btn btn-primary', id: 'modal-button' }).text('Close');
 
   $('#search-results').prepend(modalFade);
   modalFade.append(modalDiaglogue);
@@ -237,8 +251,8 @@ const parseIngredients = (ingredients, elementName) => {
 const renderGroupDetails = (elementName, recipeName) => {
   const div = $('<div>', { class: 'mt-3' });
   const ul = $('<ul>', { class: 'list-group', id: elementName });
-  const ingredientsHeader = $('<li>', { class: 'list-group-item bg-dark mt-3' });
-  const textHeader = $('<p>', { class: 'd-inline text-secondary' }).text(elementName + ' for ' + recipeName);
+  const ingredientsHeader = $('<li>', { class: 'list-group-item bg-primary mt-3' });
+  const textHeader = $('<p>', { class: 'd-inline text-light' }).text(elementName + ' for ' + recipeName);
 
   $('#search-results').append(div);
   div.append(ul);
@@ -253,7 +267,7 @@ const renderGroupDetails = (elementName, recipeName) => {
 const renderRecipeInfo = recipe => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-dark text-secondary' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<div>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)
@@ -264,8 +278,8 @@ const renderRecipeInfo = recipe => {
   const col2 = $('<div>', { class: 'col-md-8' });
   const cardBody = $('<div>', { class: 'card-body' });
   const cardTitle = $('<h5>', { class: 'card-title' }).text('Prep. Time: ' + recipe.readyInMinutes + ' minute(s) - Serving Size: ' + recipe.servings);
-  const nutritionButton = $('<button>', { class: 'btn btn-link p-0 d-block', id: 'nutrition-button' }).text('View Nutritional Info');
-  const similarRecipes = $('<button>', { class: 'btn btn-link p-0 d-block', id: 'similar-button' }).text('View Similar Recipes');
+  const nutritionButton = $('<button>', { class: 'btn btn-link text-dark p-0 d-block', id: 'nutrition-button' }).text('View Nutritional Info');
+  const similarRecipes = $('<button>', { class: 'btn btn-link text-dark p-0 d-block', id: 'similar-button' }).text('View Similar Recipes');
 
   // append elements to the html
   $('#search-results').append(card);
@@ -279,19 +293,16 @@ const renderRecipeInfo = recipe => {
 
   id = recipe.id;
 
-
-  $('.unsplash').mouseover(function () {
-    hoverInterval = setInterval(function () {
+  $('.unsplash').mouseover(function() {
+    hoverInterval = setInterval(function() {
       $('.unsplash').attr('src', randomImageUrl());
-    }, 1500)
-  })
-
-  $('.unsplash').mouseout(function () {
-    hoverInterval = clearInterval(hoverInterval);
-    $('.unsplash').attr('src', recipe.image)
+    }, 1500);
   });
 
-
+  $('.unsplash').mouseout(function() {
+    hoverInterval = clearInterval(hoverInterval);
+    $('.unsplash').attr('src', recipe.image);
+  });
 };
 /**
  * function to parse out a specific recipe from the array (recipeArr)
@@ -354,7 +365,7 @@ function clickedRecipeDetails() {
 // function to load the unsplasImageArr with the response
 function getUnsplashImages(searchTerm = currentSearchTerm, apikey = UNSPLASH_API_KEY) {
   $.ajax({
-    url: 'https://api.unsplash.com/search/photos/?client_id=' + apikey + "&page=1&query=" + searchTerm,
+    url: 'https://api.unsplash.com/search/photos/?client_id=' + apikey + '&page=1&query=' + searchTerm,
     method: 'GET'
   }).then(function(res) {
     unsplashImageArr = res.results;
@@ -374,7 +385,7 @@ function randomImageUrl() {
 const renderSearchResults = (recipe, ingredients) => {
   // create html elements for the card
   const card = $('<div>', { class: 'card mt-3' });
-  const cardHeader = $('<div>', { class: 'card-header bg-dark text-secondary' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
+  const cardHeader = $('<div>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
   // column 1 (the image)
@@ -385,8 +396,8 @@ const renderSearchResults = (recipe, ingredients) => {
   const col2 = $('<div>', { class: 'col-md-8' });
   const cardBody = $('<div>', { class: 'card-body' });
   const cardTitle = $('<h5>', { class: 'card-title' }).text('Prep. Time: ' + recipe.readyInMinutes + ' minute(s) - Serving Size: ' + recipe.servings);
-  const cardText = $('<p>', { class: 'card-text' }).text('Ingrediants: ' + ingredients);
-  const button = $('<button>', { class: 'btn btn-link p-0 recipe-details-button', id: recipe.id }).text('View Recipe Details');
+  const cardText = $('<p>', { class: 'card-text' }).text('Ingredients: ' + ingredients);
+  const button = $('<button>', { class: 'btn btn-link text-dark p-0 recipe-details-button', id: recipe.id }).text('View Recipe Details');
 
   // append elements to the html
   $('#search-results').append(card);
@@ -594,7 +605,7 @@ const getRecipeById = (id, apiKey = SPOONACULAR_API_KEY) => {
  */
 const renderLoadButton = num => {
   // create the element
-  const button = $('<button>', { class: 'btn btn-dark text-secondary w-100', id: 'load-button' }).text('Load More');
+  const button = $('<button>', { class: 'btn btn-primary text-light w-100', id: 'load-button' }).text('Load More');
 
   // append the element to the html
   $('#footer').append(button);
@@ -674,10 +685,19 @@ window.onload = () => {
     $('#footer').empty();
   });
 
-  // listen for clicks on the search-by-ingredient dropdown link
+  // listen for clicks on the searcy by ingredients dropdown link
   $('#search-by-ingredient').click(() => {
+    clearSearchResults();
     renderModal('Search by Ingredients');
-    renderSearchBar();
+    renderSearchBar('Enter the ingredient(s)', 'Seperate ingredients by a space when searching with multiple.', 0);
+  });
+
+  // listen for clicks on the advance search dropdown link
+  $('#search-by-filter').click(() => {
+    console.log('search by filter clicked');
+    clearSearchResults();
+    renderModal('Advance Search');
+    // renderSearchBar('Search a recipe', 'Fill the form and click search.', 1);
   });
 
   // listen for clicks on the 'view detailed recipe' button

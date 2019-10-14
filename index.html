@@ -17,9 +17,9 @@
 
 <body>
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-dark navbar-expand-lg navbar-primary bg-primary">
         <!-- logo -->
-        <div class="navbar-brand w-50">
+        <div class="navbar-brand w-50 text-light">
             <img src="./assets/images/logo.png" id="logo" width="30" height="30" class="d-inline-block align-top" />
             <h1 class="d-inline mr-auto">Recipe Sluts</h1>
         </div>
@@ -31,14 +31,19 @@
         <!-- navbar links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
+                <li class="nav-item text-light">
                     <button class="btn btn-link" href="" id="home-button">Home</button>
                 </li>
-                <li class="nav-item">
-                    <button class="btn btn-link" href="" id="random-button">Random Recipes</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-link" href="" id="search-by-ingredient">Search by Ingredient</button>
+                <li class="nav-item dropdown">
+                    <button class="btn btn-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Search Options
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="" id="search-by-ingredient">Search by Ingredient</a>
+                        <a class="dropdown-item" href="" id="search-by-filter">Advance Search</a>
+                        <a class="dropdown-item" href="" id="random-button">Random Recipes</a>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -49,7 +54,7 @@
         <div class="input-group mt-4">
             <input type="text" class="form-control" id="regular-search" placeholder="Search a recipe" />
             <div class="input-group-append">
-                <button class="btn btn-dark" id="search-button" type="button">
+                <button class="btn btn-primary" id="search-button" type="button">
                     Search
                 </button>
             </div>
