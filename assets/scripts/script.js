@@ -692,13 +692,13 @@ window.onload = () => {
     renderSearchBar('Enter the ingredient(s)', 'Seperate ingredients by a space when searching with multiple.', 0);
   });
 
-  // listen for clicks on the advance search dropdown link
-  $('#search-by-filter').click(() => {
-    console.log('search by filter clicked');
-    clearSearchResults();
-    renderModal('Advance Search');
-    // renderSearchBar('Search a recipe', 'Fill the form and click search.', 1);
-  });
+  // // listen for clicks on the advance search dropdown link
+  // $('#search-by-filter').click(() => {
+  //   console.log('search by filter clicked');
+  //   clearSearchResults();
+  //   renderModal('Advance Search');
+  //   // renderSearchBar('Search a recipe', 'Fill the form and click search.', 1);
+  // });
 
   // listen for clicks on the 'view detailed recipe' button
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
