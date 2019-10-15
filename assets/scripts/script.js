@@ -1,9 +1,14 @@
-let recipeArr; // array used to store the response from the api
-let currentRecipe; // stores current recipe
+let recipeArr; // array of recipes
+let currentRecipe; // current recipe object
+let currentSearchTerm; // the recipe search term
+
+// request limits
 const MAX_REQUEST_LIMIT = 3;
 let requestOffset;
 let requestLimit;
-let currentSearchTerm;
+let requestFilter;
+
+// for unsplash api
 let unsplashImageArr = [];
 let hoverInterval;
 
@@ -14,6 +19,9 @@ const resetGlobalCounters = () => {
   currentSearchTerm = '';
   requestOffset = 0;
   requestLimit = MAX_REQUEST_LIMIT;
+  // let requestFilter = '';
+
+  unsplashImageArr = [];
 };
 
 /**
@@ -41,11 +49,11 @@ const getInputFromModal = num => {
     // store search in input
     const input = $('#custom-search').val();
 
-    // clear previous search results
-    $('#search-results').empty();
+    //
 
     switch (num) {
       case 0:
+        console.log('case 0 entered');
         // update currentSearchTerm with formatted ingredients
         currentSearchTerm = formatInputIngredients(input);
 
@@ -53,13 +61,19 @@ const getInputFromModal = num => {
         getRecipeByIngredients(currentSearchTerm);
         break;
       case 1:
+        console.log('case 1 entered');
         // update currentSearchTerm with the input
         currentSearchTerm = input;
 
+        // update the requestFilter
+        requestFilter = createFilterStr();
+        console.log('requestFilter :', createFilterStr());
         // format the filters and call getRecipeAdvance
         getRecipeAdvance(createFilterStr(), input);
         break;
     }
+    // clear previous search results
+    $('#search-results').empty();
 
     // clear the footer
     $('#footer').empty();
@@ -93,8 +107,11 @@ const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
         getInputFromModal(0);
         break;
       case 1:
-        console.log('search button clicked');
         getInputFromModal(1);
+        // store search in input
+        // const input = $('#custom-search').val();
+        // getRecipeAdvance(createFilterStr(), input);
+
         break;
     }
   });
@@ -498,7 +515,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRandomRecipe = (limit = 5, apiKey = SPOONACULAR_API_KEY) => {
+const getRandomRecipe = (limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   clearSearchResults();
 
   // the url past to the request header
@@ -638,7 +655,7 @@ const renderLoadButton = num => {
         getSimilarRecipeId(currentRecipe.id, (requestLimit += MAX_REQUEST_LIMIT));
         break;
       case 4:
-        getRecipeById('TODO: GLOBAL VARIABLE FOR filter string', currentSearchTerm, (requestOffset += requestLimit));
+        getRecipeById(requestFilter, currentSearchTerm, (requestOffset += requestLimit));
         break;
     }
 
@@ -705,14 +722,6 @@ window.onload = () => {
     renderModal('Search by Ingredients');
     renderSearchBar('Enter the ingredient(s)', 'Seperate ingredients by a space when searching with multiple.', 0);
   });
-
-  // // listen for clicks on the advance search dropdown link
-  // $('#search-by-filter').click(() => {
-  //   console.log('search by filter clicked');
-  //   clearSearchResults();
-  //   renderModal('Advance Search');
-  //   // renderSearchBar('Search a recipe', 'Fill the form and click search.', 1);
-  // });
 
   // listen for clicks on the 'view detailed recipe' button
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);

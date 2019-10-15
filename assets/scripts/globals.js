@@ -102,7 +102,6 @@ const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = r
       // check to see if response length is 0
       if (!res.results.length) {
         renderModal('Warning', 'Your search does not have any matches...'); // warn the user
-        console.log('no results found');
       } else {
         // loop through the responses
         res.results.forEach(recipe => {
