@@ -81,7 +81,8 @@ const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
         break;
       case 1:
         // grab input from filters (this is the case for advance filters)
-        console.log('TODO: grab input from filters...');
+        console.log('search button clicked');
+        getRecipeAdvance(clickedAdvanceSearch());
         break;
     }
   });
@@ -224,8 +225,6 @@ const parseInstructions = (instructions, elementName) => {
 
   // loop through the instructions
   for (let i = 0; i < instructionsArr.length - 1; i++) {
-    // TODO: remove html tags from some results...
-
     // render instruction
     renderIngredients(instructionsArr[i], elementName);
   }
@@ -625,6 +624,9 @@ const renderLoadButton = num => {
         break;
       case 3:
         getSimilarRecipeId(currentRecipe.id, (requestLimit += MAX_REQUEST_LIMIT));
+        break;
+      case 4:
+        getRecipeById('TODO: GLOBAL VARIABLE FOR filter string', currentSearchTerm, (requestOffset += requestLimit));
         break;
     }
 
