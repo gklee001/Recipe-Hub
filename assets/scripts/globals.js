@@ -116,6 +116,7 @@ const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = r
 
 // function parses and build part of the request url based on what the user checked
 const createFilterStr = () => {
+  console.log('createFilterStr() called');
   let result = '';
 
   // loop through each category
@@ -132,6 +133,19 @@ const createFilterStr = () => {
 
   // add to the result string what the user wants to sort by
   result += '&sort=' + $('#sortByButton').val();
+
+  // add to the result string what direction the user wants to sort by
+  result += '&sortDirection=' + $('#orderByButton').val();
+
+  // add included ingredients to the result string
+  const includedIngredients = formatInputIngredients($('#include-input').val());
+
+  includedIngredients === '' ? '' : (result += '&includeIngredients=' + formatInputIngredients($('#include-input').val()));
+
+  // add excluded ingredients to the result string
+  const excludedIngredients = formatInputIngredients($('#exclude-input').val());
+
+  excludedIngredients === '' ? '' : (result += '&excludeIngredients=' + formatInputIngredients($('#exclude-input').val()));
 
   return result;
 };
@@ -252,8 +266,8 @@ const renderAdvanceForm = () => {
 
   // render drop down menu for order by
   renderDropDown('orderByButton');
-  renderDropDownButton('Order by: ', 'Descending', '#orderByButton');
-  renderDropDownButton('Order by: ', 'Ascending', '#orderByButton');
+  renderDropDownButton('Order by: ', 'descending', '#orderByButton');
+  renderDropDownButton('Order by: ', 'ascending', '#orderByButton');
 
   // render input to include / exclude ingredients
   renderInputBar('Enter ingredients to include', 'include-input');

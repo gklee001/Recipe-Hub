@@ -12,6 +12,8 @@ let requestFilter;
 let unsplashImageArr = [];
 let hoverInterval;
 
+let zIndex = 2; // defaults z-index for modals
+
 // function to clear global counters
 const resetGlobalCounters = () => {
   recipeArr = [];
@@ -41,7 +43,7 @@ const getInputFromModal = num => {
 
   // check if .form-control is empty and alert user
   if (!$('#custom-search').val()) {
-    renderModal('Warning', 'You must enter something to search...');
+    renderModal('Warning', 'You must enter something to search...', 5);
   }
 
   // else... user has entered text into the search bar
@@ -66,7 +68,7 @@ const getInputFromModal = num => {
         requestFilter = createFilterStr();
 
         // format the filters and call getRecipeAdvance
-        getRecipeAdvance(createFilterStr(), input);
+        getRecipeAdvance(requestFilter, input);
         break;
     }
     // clear previous search results
@@ -178,9 +180,14 @@ const clickModal = () => {
   };
 };
 
-// function to render the modal
-const renderModal = (title, message = '') => {
-  const modalFade = $('<div>', { id: 'modal' });
+/**
+ * function to render the modal
+ * @param {string} title the title of the modal
+ * @param {string} message the message of the modal
+ * @param {number} z the z-index of the modal
+ */
+const renderModal = (title, message = '', z = zIndex) => {
+  const modalFade = $('<div>', { id: 'modal' }).css('z-index', z);
   const modalDiaglogue = $('<div>', { class: 'modal-dialog' });
   const modalContent = $('<div>', { class: 'modal-content' });
   const modalHeader = $('<div>', { class: 'modal-header' });
@@ -370,7 +377,7 @@ function clickedRecipeDetails() {
   // the the recipe does not have any instructions...
   if (!recipe.instructions) {
     // render a modal displaying the warning
-    renderModal('Warning', 'There are no instructions for this recipe.');
+    renderModal('Warning', 'There are no instructions for this recipe.', 5);
   }
   // render the detailed recipe information otherwise
   else {
@@ -437,7 +444,7 @@ const getInput = () => {
 
   // check if search input is empty and alert user
   if (!$('#regular-search').val()) {
-    renderModal('Warning', 'You must enter something to search...');
+    renderModal('Warning', 'You must enter something to search...', 5);
   }
 
   // else... user has entered text into the search bar
@@ -490,7 +497,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
     .then(res => {
       // check to see if response length is 0
       if (!res.length) {
-        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+        renderModal('Warning', 'Your search does not have any matches...', 5); // warn the user
       } else {
         // loop through each recipe from the response
         res.forEach(recipe => {
@@ -675,7 +682,7 @@ const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, api
     .then(res => {
       // check to see if response length is 0
       if (!res.results.length) {
-        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+        renderModal('Warning', 'Your search does not have any matches...', 5); // warn the user
       } else {
         // loop through the responses
         res.results.forEach(recipe => {
