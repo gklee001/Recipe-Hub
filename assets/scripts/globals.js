@@ -86,7 +86,7 @@ const sort = [
   'zinc'
 ];
 
-// include ingredients, excluded ingredients, maxReadyTime, sort, sortdirection
+// include ingredients, excluded ingredients, maxReadyTime, sortdirection
 const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
   //   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey + '&offset=' + offset;
@@ -154,21 +154,45 @@ const parseCheckBoxes = category => {
 };
 
 /**
- * function to render options for each sorting filter
- * @param {string} name the name of each element in the category
+ * function to render the input elements
+ * @param {string} placeholderTxt the placeholder text to be appended to the input
+ * @param {string} id the id of the element
  */
-const renderDropDownButton = name => {
-  const option = $('<option>', { class: 'text-dark bg-light', value: name }).text('Sort by: ' + name);
-  $('#sortByButton').append(option);
+const renderInputBar = (placeholderTxt, id) => {
+  // create elements
+  const divGroup = $('<div>', { class: 'input-group mt-3' });
+  const searchBar = $('<input>', { class: 'form-control', id: id, type: 'text', placeholder: placeholderTxt });
+  const divInput = $('<div>', { class: 'input-group-append' });
+
+  // append elements
+  $('.modal-body').append(divGroup);
+  divGroup.append(searchBar, divInput);
+};
+
+/**
+ * function to render options for each sorting filter
+ * @param {string} preTxt the text to append before the name
+ * @param {string} name the name of each element in the category
+ * @param {string} parentElement the parentElement to append this to
+ */
+const renderDropDownButton = (preTxt, name, parentElement) => {
+  // create the element
+  const option = $('<option>', { class: 'text-dark bg-light', value: name }).text(preTxt + name);
+
+  // append the element
+  $(parentElement).append(option);
 };
 
 /**
  * function to render the drop down filter
+ * @param {string} elementId the id of this element
  * @param {string} parentElement the element to append this element to
  */
-const renderDropDown = (parentElement = '.modal-body') => {
-  const select = $('<select>', { class: 'form-control w-100 mt-3 bg-primary text-light', id: 'sortByButton' });
+const renderDropDown = (elementId, parentElement = '.modal-body') => {
+  // create the element
+  const select = $('<select>', { class: 'form-control w-100 mt-3 bg-primary text-light', id: elementId });
 
+  // append the element
   $(parentElement).append(select);
 };
 
@@ -218,13 +242,22 @@ const renderAdvanceForm = () => {
   });
 
   // render drop down menu for sort by
-  renderDropDown();
+  renderDropDown('sortByButton');
 
   // loop through the sort array
   sort.forEach(element => {
     // create options for each sort
-    renderDropDownButton(element);
+    renderDropDownButton('Sort by: ', element, '#sortByButton');
   });
+
+  // render drop down menu for order by
+  renderDropDown('orderByButton');
+  renderDropDownButton('Order by: ', 'Descending', '#orderByButton');
+  renderDropDownButton('Order by: ', 'Ascending', '#orderByButton');
+
+  // render input to include / exclude ingredients
+  renderInputBar('Enter ingredients to include', 'include-input');
+  renderInputBar('Enter ingredients to exclude', 'exclude-input');
 };
 
 // listen for clicks on advance search

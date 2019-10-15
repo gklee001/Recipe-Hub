@@ -105,10 +105,6 @@ const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
         break;
       case 1:
         getInputFromModal(1);
-        // store search in input
-        // const input = $('#custom-search').val();
-        // getRecipeAdvance(createFilterStr(), input);
-
         break;
     }
   });
