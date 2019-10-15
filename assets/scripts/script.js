@@ -53,7 +53,6 @@ const getInputFromModal = num => {
 
     switch (num) {
       case 0:
-        console.log('case 0 entered');
         // update currentSearchTerm with formatted ingredients
         currentSearchTerm = formatInputIngredients(input);
 

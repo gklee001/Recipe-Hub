@@ -115,7 +115,6 @@ const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = r
 
 // function parses and build part of the request url based on what the user checked
 const createFilterStr = () => {
-  console.log('createFilterStr() called');
   let result = '';
 
   // loop through each category
@@ -279,7 +278,7 @@ const renderAdvanceForm = () => {
   renderInputBar('Enter ingredients to exclude', 'exclude-input');
 
   // render input for the max prep. time
-  renderInputBar('Enter maximum prep. time', 'time-input', 'number');
+  renderInputBar('Enter maximum prep. time (minutes)', 'time-input', 'number');
 };
 
 // listen for clicks on advance search
