@@ -122,6 +122,7 @@ const getAdvanceInput = () => {};
  * @param {string} elementClassName the element's class name
  */
 const parseCheckBoxes = elementClassName => {
+  // parseCheckBoxes('form-check-input-Cusines')
   return $('.' + elementClassName + ':checked')
     .map(function() {
       return this.value;
@@ -141,7 +142,7 @@ const renderRadioButtons = (name, category) => {
 
 const renderCheckboxes = (name, category) => {
   const formCheck = $('<div>', { class: 'form-check mb-2' });
-  const input = $('<input>', { class: 'form-check-input' + category, type: 'checkbox', value: 'carribean', id: 'collapse' + category });
+  const input = $('<input>', { class: 'form-check-input-' + category, type: 'checkbox', value: name });
   const label = $('<label>', { class: 'form-check-label' }).text(name);
 
   $('.' + category).append(formCheck);
