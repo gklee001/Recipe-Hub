@@ -31,59 +31,60 @@ const allCategories = {
   ],
   Diets: ['Gluten Free', 'Ketogenic', 'Vgetarian', 'Lacto-Vegetarian', 'Ovo-Vegetarian', 'Vegan', 'Pescetarian', 'Paleo', 'Primal', 'Whole30'],
   Intolerances: ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy', 'Sulfite', 'Tree', 'Nut', 'Wheat'],
-  MealTypes: ['Main', 'Course', 'Side', 'Dish', 'Dessert', 'Appetizer', 'Salad', 'Bread', 'Breakfast', 'Soup', 'Beverage', 'Sauce', 'Marinade', 'Fingerfood', 'Snack', 'Drink'],
-  SortBy: [
-    'Popularity',
-    'Healthiness',
-    'Price',
-    'Time',
-    'Alcohol',
-    'Caffeine',
-    'Copper',
-    'Energy',
-    'Calories',
-    'Calcium',
-    'Carbohydrates',
-    'Carbs',
-    'Choline',
-    'Cholesterol',
-    'Total-fat',
-    'Fluoride',
-    'Trans-fat',
-    'Saturated-fat',
-    'Mono-unsaturated-fat',
-    'Poly-unsaturated-fat',
-    'Fiber',
-    'Folate',
-    'Folic-acid',
-    'Iodine',
-    'Iron',
-    'Magnesium',
-    'Manganese',
-    'Vitamin-b3',
-    'Niacin',
-    'Vitamin-b5',
-    'Pantothenic-acid',
-    'Phosphorus',
-    'Potassium',
-    'Protein',
-    'Vitamin-b2',
-    'Riboflavin',
-    'Selenium',
-    'Sodium',
-    'Vitamin-b1',
-    'Thiamin',
-    'Vitamin-a',
-    'Vitamin-b6',
-    'Vitamin-b12',
-    'Vitamin-c',
-    'Vitamin-d',
-    'Vitamin-e',
-    'Vitamin-k',
-    'Sugar',
-    'Zinc'
-  ]
+  MealTypes: ['Main', 'Course', 'Side', 'Dish', 'Dessert', 'Appetizer', 'Salad', 'Bread', 'Breakfast', 'Soup', 'Beverage', 'Sauce', 'Marinade', 'Fingerfood', 'Snack', 'Drink']
 };
+
+const SortBy = [
+  'Popularity',
+  'Healthiness',
+  'Price',
+  'Time',
+  'Alcohol',
+  'Caffeine',
+  'Copper',
+  'Energy',
+  'Calories',
+  'Calcium',
+  'Carbohydrates',
+  'Carbs',
+  'Choline',
+  'Cholesterol',
+  'Total-fat',
+  'Fluoride',
+  'Trans-fat',
+  'Saturated-fat',
+  'Mono-unsaturated-fat',
+  'Poly-unsaturated-fat',
+  'Fiber',
+  'Folate',
+  'Folic-acid',
+  'Iodine',
+  'Iron',
+  'Magnesium',
+  'Manganese',
+  'Vitamin-b3',
+  'Niacin',
+  'Vitamin-b5',
+  'Pantothenic-acid',
+  'Phosphorus',
+  'Potassium',
+  'Protein',
+  'Vitamin-b2',
+  'Riboflavin',
+  'Selenium',
+  'Sodium',
+  'Vitamin-b1',
+  'Thiamin',
+  'Vitamin-a',
+  'Vitamin-b6',
+  'Vitamin-b12',
+  'Vitamin-c',
+  'Vitamin-d',
+  'Vitamin-e',
+  'Vitamin-k',
+  'Sugar',
+  'Zinc'
+];
 
 // include ingredients, excluded ingredients, maxReadyTime, sort, sortdirection
 const getRecipeAdvance = (searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
@@ -129,6 +130,15 @@ const parseCheckBoxes = elementClassName => {
     .join(',+');
 };
 
+const renderRadioButtons = (name, category) => {
+  const div = $('<div>', { class: 'custom-control custom-radio' });
+  const input = $('<input>', { type: 'radio', id: name, name: category + 'Radio', class: 'custom-control-input' });
+  const label = $('<label>', { class: 'custom-control-label', for: name }).text(name);
+
+  $('.' + category).append(div);
+  div.append(input, label);
+};
+
 const renderCheckboxes = (name, category) => {
   const formCheck = $('<div>', { class: 'form-check mb-2' });
   const input = $('<input>', { class: 'form-check-input' + category, type: 'checkbox', value: 'carribean', id: 'collapse' + category });
@@ -156,6 +166,11 @@ const renderAdvanceForm = () => {
     allCategories[category].forEach(name => {
       renderCheckboxes(name, category);
     });
+  });
+
+  renderCategories('SortBy');
+  SortBy.forEach(element => {
+    renderRadioButtons(element, 'SortBy');
   });
 };
 
