@@ -87,10 +87,10 @@ const sort = [
 ];
 
 // include ingredients, excluded ingredients, maxReadyTime, sort, sortdirection
-const getRecipeAdvance = (searchTerm, filters, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
+const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
   //   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey + '&offset=' + offset;
-  const url = 'https://api.spoonacular.com/recipes/complexSearch?query=cheese' /*+ searchTerm*/ + '&number=' + limit + '&offset=' + offset + '&apiKey=' + apiKey + filters;
+  const url = 'https://api.spoonacular.com/recipes/complexSearch?query=' + searchTerm + '&number=' + limit + '&offset=' + offset + '&apiKey=' + apiKey + filters;
   console.log('url :', url);
   // send a GET request to the search endpoint
   // https://spoonacular.com/food-api/docs#Search-Recipes-Complex
@@ -102,6 +102,7 @@ const getRecipeAdvance = (searchTerm, filters, offset = requestOffset, limit = r
       // check to see if response length is 0
       if (!res.results.length) {
         renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+        console.log('no results found');
       } else {
         // loop through the responses
         res.results.forEach(recipe => {
@@ -114,37 +115,8 @@ const getRecipeAdvance = (searchTerm, filters, offset = requestOffset, limit = r
     .catch(err => console.log('Error occured searching for ' + searchTerm + ' ' + err));
 };
 
-const validateAdvanceInput = () => {
-  resetGlobalCounters();
-
-  // check if .form-control is empty and alert user
-  if (!$('#ingredients-search').val()) {
-    renderModal('Warning', 'You must enter something to search...');
-  }
-
-  // else... user has entered text into the search bar
-  else {
-    // clear any previous search results
-    clearSearchResults();
-
-    // store and clean search in input
-    const input = $('#custom-search')
-      .val()
-      .trim();
-
-    //second api call unsplash api variable
-    currentSearchTerm = input;
-
-    // format the ingredients and call the getRecipeByIngredients
-    const a = clickedAdvanceSearch();
-    console.log('a :', a);
-    getRecipeAdvance(input, a);
-    $('#footer').empty();
-  }
-};
-
-// function parses and build url based on what the user checked etc...
-const clickedAdvanceSearch = () => {
+// function parses and build part of the request url based on what the user checked
+const createFilterStr = () => {
   let result = '';
 
   // loop through each category
@@ -161,8 +133,6 @@ const clickedAdvanceSearch = () => {
 
   // add to the result string what the user wants to sort by
   result += '&sort=' + $('#sortByButton').val();
-
-  console.log('result :', result);
 
   return result;
 };

@@ -28,27 +28,40 @@ const formatInputIngredients = input => {
  * function to retrieve input from the search bar where the user
  * is is searching for recipes by ingredients
  */
-const getIngredientsFromInput = () => {
+const getInputFromModal = num => {
   resetGlobalCounters();
 
   // check if .form-control is empty and alert user
-  if (!$('#ingredients-search').val()) {
+  if (!$('#custom-search').val()) {
     renderModal('Warning', 'You must enter something to search...');
   }
 
   // else... user has entered text into the search bar
   else {
     // store search in input
-    const input = $('#ingredients-search').val();
+    const input = $('#custom-search').val();
 
     // clear previous search results
     $('#search-results').empty();
 
-    // update currentSearchTerm with formatted ingredients
-    currentSearchTerm = formatInputIngredients(input);
+    switch (num) {
+      case 0:
+        // update currentSearchTerm with formatted ingredients
+        currentSearchTerm = formatInputIngredients(input);
 
-    // format the ingredients and call the getRecipeByIngredients
-    getRecipeByIngredients(currentSearchTerm);
+        // format the ingredients and call the getRecipeByIngredients
+        getRecipeByIngredients(currentSearchTerm);
+        break;
+      case 1:
+        // update currentSearchTerm with the input
+        currentSearchTerm = input;
+
+        // format the filters and call getRecipeAdvance
+        getRecipeAdvance(createFilterStr(), input);
+        break;
+    }
+
+    // clear the footer
     $('#footer').empty();
   }
 };
@@ -62,7 +75,7 @@ const getIngredientsFromInput = () => {
 const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
   // create elements
   const divGroup = $('<div>', { class: 'input-group' });
-  const searchBar = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: placeholderTxt });
+  const searchBar = $('<input>', { class: 'form-control', id: 'custom-search', type: 'text', placeholder: placeholderTxt });
   const divInput = $('<div>', { class: 'input-group-append' });
   const searchButton = $('<button>', { class: 'btn btn-primary', id: 'custom-search-button', type: 'button' }).text('Search');
   const disclaimer = $('<p>', { class: 'text-muted font-italic mx-2 mt-3 mb-1' }).text(disclaimerTxt);
@@ -77,12 +90,11 @@ const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
     // switch statement to check which case the load button will do when clicked
     switch (num) {
       case 0:
-        getIngredientsFromInput();
+        getInputFromModal(0);
         break;
       case 1:
-        // grab input from filters (this is the case for advance filters)
         console.log('search button clicked');
-        getRecipeAdvance(clickedAdvanceSearch());
+        getInputFromModal(1);
         break;
     }
   });
