@@ -89,9 +89,8 @@ const sort = [
 // include ingredients, excluded ingredients, maxReadyTime, sortdirection
 const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   // the url past to the request header
-  //   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey + '&offset=' + offset;
   const url = 'https://api.spoonacular.com/recipes/complexSearch?query=' + searchTerm + '&number=' + limit + '&offset=' + offset + '&apiKey=' + apiKey + filters;
-  console.log('url :', url);
+
   // send a GET request to the search endpoint
   // https://spoonacular.com/food-api/docs#Search-Recipes-Complex
   $.ajax({
@@ -147,6 +146,11 @@ const createFilterStr = () => {
 
   excludedIngredients === '' ? '' : (result += '&excludeIngredients=' + formatInputIngredients($('#exclude-input').val()));
 
+  // add the max prep. time to the result string
+  const maxPrepTime = $('#time-input').val();
+
+  maxPrepTime === '' ? '' : (result += '&maxReadyTime=' + $('#time-input').val());
+
   return result;
 };
 
@@ -171,11 +175,12 @@ const parseCheckBoxes = category => {
  * function to render the input elements
  * @param {string} placeholderTxt the placeholder text to be appended to the input
  * @param {string} id the id of the element
+ * @param {string} type the type of input
  */
-const renderInputBar = (placeholderTxt, id) => {
+const renderInputBar = (placeholderTxt, id, type = 'text') => {
   // create elements
   const divGroup = $('<div>', { class: 'input-group mt-3' });
-  const searchBar = $('<input>', { class: 'form-control', id: id, type: 'text', placeholder: placeholderTxt });
+  const searchBar = $('<input>', { class: 'form-control', id: id, type: type, placeholder: placeholderTxt });
   const divInput = $('<div>', { class: 'input-group-append' });
 
   // append elements
@@ -272,6 +277,9 @@ const renderAdvanceForm = () => {
   // render input to include / exclude ingredients
   renderInputBar('Enter ingredients to include', 'include-input');
   renderInputBar('Enter ingredients to exclude', 'exclude-input');
+
+  // render input for the max prep. time
+  renderInputBar('Enter maximum prep. time', 'time-input', 'number');
 };
 
 // listen for clicks on advance search
