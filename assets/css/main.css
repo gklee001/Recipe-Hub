@@ -7095,7 +7095,7 @@ ul .list-group-item:hover {
 #load-button {
   border-radius: 0; }
 
-/* .unsplash{
-      height: 152px;
-      width: 230px;
-  } */
+.unsplash {
+  object-fit: scale-down;
+  height: 250px;
+  overflow: hidden; }
