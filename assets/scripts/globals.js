@@ -1,5 +1,5 @@
 const allCategories = {
-  Cusines: [
+  Cuisine: [
     'african',
     'american',
     'british',
@@ -29,9 +29,9 @@ const allCategories = {
     'thai',
     'vietnamese'
   ],
-  Diets: ['gluten free', 'ketogenic', 'vegetarian', 'lacto-vegetarian', 'ovo-vegetarian', 'vegan', 'pescetarian', 'paleo', 'primal', 'whole30'],
+  Diet: ['gluten free', 'ketogenic', 'vegetarian', 'lacto-vegetarian', 'ovo-vegetarian', 'vegan', 'pescetarian', 'paleo', 'primal', 'whole30'],
   Intolerances: ['dairy', 'egg', 'gluten', 'grain', 'peanut', 'seafood', 'sesame', 'shellfish', 'soy', 'sulfite', 'tree', 'nut', 'wheat'],
-  MealTypes: ['main', 'course', 'side', 'dish', 'dessert', 'apppetizer', 'salad', 'bread', 'breakfast', 'soup', 'severage', 'sauce', 'marinade', 'fingerfood', 'snack', 'drink']
+  Type: ['main', 'course', 'side', 'dish', 'dessert', 'apppetizer', 'salad', 'bread', 'breakfast', 'soup', 'severage', 'sauce', 'marinade', 'fingerfood', 'snack', 'drink']
 };
 
 const sort = [

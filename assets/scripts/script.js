@@ -19,7 +19,7 @@ const resetGlobalCounters = () => {
   currentSearchTerm = '';
   requestOffset = 0;
   requestLimit = MAX_REQUEST_LIMIT;
-  // let requestFilter = '';
+  requestFilter = '';
 
   unsplashImageArr = [];
 };
@@ -49,8 +49,6 @@ const getInputFromModal = num => {
     // store search in input
     const input = $('#custom-search').val();
 
-    //
-
     switch (num) {
       case 0:
         console.log('case 0 entered');
@@ -61,13 +59,12 @@ const getInputFromModal = num => {
         getRecipeByIngredients(currentSearchTerm);
         break;
       case 1:
-        console.log('case 1 entered');
         // update currentSearchTerm with the input
         currentSearchTerm = input;
 
         // update the requestFilter
         requestFilter = createFilterStr();
-        console.log('requestFilter :', createFilterStr());
+
         // format the filters and call getRecipeAdvance
         getRecipeAdvance(createFilterStr(), input);
         break;
@@ -655,7 +652,7 @@ const renderLoadButton = num => {
         getSimilarRecipeId(currentRecipe.id, (requestLimit += MAX_REQUEST_LIMIT));
         break;
       case 4:
-        getRecipeById(requestFilter, currentSearchTerm, (requestOffset += requestLimit));
+        getRecipeAdvance(requestFilter, currentSearchTerm, (requestOffset += requestLimit));
         break;
     }
 
