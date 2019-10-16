@@ -284,7 +284,7 @@ const renderAdvanceForm = () => {
 // listen for clicks on advance search
 $('#search-by-filter').click(() => {
   event.preventDefault();
-  renderModal('Advance Search');
+  renderModal('Advanced Search');
   renderSearchBar('Search a recipe', '', 1);
   renderAdvanceForm();
 });
