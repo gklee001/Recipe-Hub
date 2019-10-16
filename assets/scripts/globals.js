@@ -160,7 +160,7 @@ const createFilterStr = () => {
 const parseCheckBoxes = category => {
   // parse the string
   const str = $('.' + category + ':checked')
-    .map(function() {
+    .map(function () {
       return this.value; // return's jQuery of elements that was checked
     })
     .get() // gets you an array
