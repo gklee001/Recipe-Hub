@@ -1,11 +1,18 @@
-let recipeArr; // array used to store the response from the api
-let currentRecipe; // stores current recipe
+let recipeArr; // array of recipes
+let currentRecipe; // current recipe object
+let currentSearchTerm; // the recipe search term
+
+// request limits
 const MAX_REQUEST_LIMIT = 3;
 let requestOffset;
 let requestLimit;
-let currentSearchTerm;
+let requestFilter;
+
+// for unsplash api
 let unsplashImageArr = [];
 let hoverInterval;
+
+let zIndex = 2; // defaults z-index for modals
 
 // function to clear global counters
 const resetGlobalCounters = () => {
@@ -14,6 +21,9 @@ const resetGlobalCounters = () => {
   currentSearchTerm = '';
   requestOffset = 0;
   requestLimit = MAX_REQUEST_LIMIT;
+  requestFilter = '';
+
+  unsplashImageArr = [];
 };
 
 /**
@@ -28,27 +38,42 @@ const formatInputIngredients = input => {
  * function to retrieve input from the search bar where the user
  * is is searching for recipes by ingredients
  */
-const getIngredientsFromInput = () => {
+const getInputFromModal = num => {
   resetGlobalCounters();
 
   // check if .form-control is empty and alert user
-  if (!$('#ingredients-search').val()) {
-    renderModal('Warning', 'You must enter something to search...');
+  if (!$('#custom-search').val()) {
+    renderModal('Warning', 'You must enter something to search...', 5);
   }
 
   // else... user has entered text into the search bar
   else {
     // store search in input
-    const input = $('#ingredients-search').val();
+    const input = $('#custom-search').val();
 
+    switch (num) {
+      case 0:
+        // update currentSearchTerm with formatted ingredients
+        currentSearchTerm = formatInputIngredients(input);
+
+        // format the ingredients and call the getRecipeByIngredients
+        getRecipeByIngredients(currentSearchTerm);
+        break;
+      case 1:
+        // update currentSearchTerm with the input
+        currentSearchTerm = input;
+
+        // update the requestFilter
+        requestFilter = createFilterStr();
+
+        // format the filters and call getRecipeAdvance
+        getRecipeAdvance(requestFilter, input);
+        break;
+    }
     // clear previous search results
     $('#search-results').empty();
 
-    // update currentSearchTerm with formatted ingredients
-    currentSearchTerm = formatInputIngredients(input);
-
-    // format the ingredients and call the getRecipeByIngredients
-    getRecipeByIngredients(currentSearchTerm);
+    // clear the footer
     $('#footer').empty();
   }
 };
@@ -62,7 +87,7 @@ const getIngredientsFromInput = () => {
 const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
   // create elements
   const divGroup = $('<div>', { class: 'input-group' });
-  const searchBar = $('<input>', { class: 'form-control', id: 'ingredients-search', type: 'text', placeholder: placeholderTxt });
+  const searchBar = $('<input>', { class: 'form-control', id: 'custom-search', type: 'text', placeholder: placeholderTxt });
   const divInput = $('<div>', { class: 'input-group-append' });
   const searchButton = $('<button>', { class: 'btn btn-primary', id: 'custom-search-button', type: 'button' }).text('Search');
   const disclaimer = $('<p>', { class: 'text-muted font-italic mx-2 mt-3 mb-1' }).text(disclaimerTxt);
@@ -77,11 +102,10 @@ const renderSearchBar = (placeholderTxt, disclaimerTxt, num) => {
     // switch statement to check which case the load button will do when clicked
     switch (num) {
       case 0:
-        getIngredientsFromInput();
+        getInputFromModal(0);
         break;
       case 1:
-        // grab input from filters (this is the case for advance filters)
-        console.log('TODO: grab input from filters...');
+        getInputFromModal(1);
         break;
     }
   });
@@ -155,9 +179,14 @@ const clickModal = () => {
   };
 };
 
-// function to render the modal
-const renderModal = (title, message = '') => {
-  const modalFade = $('<div>', { id: 'modal' });
+/**
+ * function to render the modal
+ * @param {string} title the title of the modal
+ * @param {string} message the message of the modal
+ * @param {number} z the z-index of the modal
+ */
+const renderModal = (title, message = '', z = zIndex) => {
+  const modalFade = $('<div>', { id: 'modal' }).css('z-index', z);
   const modalDiaglogue = $('<div>', { class: 'modal-dialog' });
   const modalContent = $('<div>', { class: 'modal-content' });
   const modalHeader = $('<div>', { class: 'modal-header' });
@@ -224,8 +253,6 @@ const parseInstructions = (instructions, elementName) => {
 
   // loop through the instructions
   for (let i = 0; i < instructionsArr.length - 1; i++) {
-    // TODO: remove html tags from some results...
-
     // render instruction
     renderIngredients(instructionsArr[i], elementName);
   }
@@ -349,7 +376,7 @@ function clickedRecipeDetails() {
   // the the recipe does not have any instructions...
   if (!recipe.instructions) {
     // render a modal displaying the warning
-    renderModal('Warning', 'There are no instructions for this recipe.');
+    renderModal('Warning', 'There are no instructions for this recipe.', 5);
   }
   // render the detailed recipe information otherwise
   else {
@@ -416,7 +443,7 @@ const getInput = () => {
 
   // check if search input is empty and alert user
   if (!$('#regular-search').val()) {
-    renderModal('Warning', 'You must enter something to search...');
+    renderModal('Warning', 'You must enter something to search...', 5);
   }
 
   // else... user has entered text into the search bar
@@ -469,7 +496,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
     .then(res => {
       // check to see if response length is 0
       if (!res.length) {
-        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+        renderModal('Warning', 'Your search does not have any matches...', 5); // warn the user
       } else {
         // loop through each recipe from the response
         res.forEach(recipe => {
@@ -487,7 +514,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRandomRecipe = (limit = 5, apiKey = SPOONACULAR_API_KEY) => {
+const getRandomRecipe = (limit = requestLimit, apiKey = SPOONACULAR_API_KEY) => {
   clearSearchResults();
 
   // the url past to the request header
@@ -626,6 +653,9 @@ const renderLoadButton = num => {
       case 3:
         getSimilarRecipeId(currentRecipe.id, (requestLimit += MAX_REQUEST_LIMIT));
         break;
+      case 4:
+        getRecipeAdvance(requestFilter, currentSearchTerm, (requestOffset += requestLimit));
+        break;
     }
 
     // empty footer
@@ -651,7 +681,7 @@ const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, api
     .then(res => {
       // check to see if response length is 0
       if (!res.results.length) {
-        renderModal('Warning', 'Your search does not have any matches...'); // warn the user
+        renderModal('Warning', 'Your search does not have any matches...', 5); // warn the user
       } else {
         // loop through the responses
         res.results.forEach(recipe => {
@@ -690,14 +720,6 @@ window.onload = () => {
     clearSearchResults();
     renderModal('Search by Ingredients');
     renderSearchBar('Enter the ingredient(s)', 'Seperate ingredients by a space when searching with multiple.', 0);
-  });
-
-  // listen for clicks on the advance search dropdown link
-  $('#search-by-filter').click(() => {
-    console.log('search by filter clicked');
-    clearSearchResults();
-    renderModal('Advance Search');
-    // renderSearchBar('Search a recipe', 'Fill the form and click search.', 1);
   });
 
   // listen for clicks on the 'view detailed recipe' button
