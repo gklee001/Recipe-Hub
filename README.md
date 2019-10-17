@@ -4,7 +4,7 @@ Recipe Sluts a web app that allows users to search for recipes using keywords, s
 
 ## Usage
 
-View live demo [here](https://doanja.github.io/Project-1/).
+View live demo [here](https://doanja.github.io/Recipe-Sluts/).
 
 1. Enter key word of the recipe you want to search for and click search.
 2. Find a recipe from the search result and click **view details**.
@@ -26,7 +26,7 @@ View live demo [here](https://doanja.github.io/Project-1/).
 - **Gloria Lee** - [gklee001](https://github.com/gklee001)
 - **Kioni Pablo** - [kionpablo](https://github.com/kionipablo)
 
-See also the list of [contributors](https://github.com/doanja/Project-1/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/doanja/Recipe-Sluts/graphs/contributors) who participated in this project.
 
 ## License
 
