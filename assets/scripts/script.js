@@ -488,12 +488,13 @@ window.onload = () => {
 
   // listen for click on the search button
   $('#search-button').click(() => {
-    getInput();
+    $('#footer').empty();
   });
 
   // listen to click for home button
   $('#home-button').click(() => {
     clearSearchResults();
+    $();
   });
 
   // listen to click for the random recipe button
