@@ -329,10 +329,10 @@ function clickedRecipeDetails() {
     renderGroupDetails('Instructions', recipe.title);
     parseInstructions(recipe.instructions, 'Instructions');
     getUnsplashImages();
-
-    // empty footer
-    $('#footer').empty();
   }
+
+  // empty footer
+  $('#footer').empty();
 }
 
 /**
