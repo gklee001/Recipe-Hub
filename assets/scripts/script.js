@@ -312,6 +312,9 @@ function clickedRecipeDetails() {
   // clear all search results
   $('#search-results').empty();
 
+  // scroll to the top of the page
+  $('body').scrollTop(0);
+
   // get the ID of the button
   const id = parseInt($(this).attr('RecipeId'));
 
@@ -542,5 +545,10 @@ window.onload = () => {
     getSimilarRecipeId(currentRecipe.id);
     // clear the footer
     $('#footer').empty();
+  });
+
+  $('#scroll-up-button').click(function() {
+    console.log('scroll up clicked');
+    $('body').scrollTop(0);
   });
 };
