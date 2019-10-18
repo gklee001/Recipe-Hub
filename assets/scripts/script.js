@@ -488,6 +488,7 @@ window.onload = () => {
 
   // listen for click on the search button
   $('#search-button').click(() => {
+    getInput();
     $('#footer').empty();
   });
 
