@@ -15,10 +15,17 @@ View live demo [here](https://doanja.github.io/Recipe-Sluts/).
 - jQuery / JavaScript
 - Bootstrap / Sass / CSS3
 
-## Install Sass
+## Usage
 
+### Modifying Website Theme
 1. npm init
 2. npm i node-sass
+3. Open scss/main.scss
+4. Save to recompile scss file
+
+### Using your own API keys
+1. Requests keys from [Spoonacular](https://spoonacular.com/food-api/) and [Unsplash](https://unsplash.com/developers)
+2. Open assets/scripts/keys.js to update the API keys
 
 ## Authors
 
