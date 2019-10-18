@@ -150,17 +150,22 @@ const renderModal = (title, message = '', z = zIndex) => {
  * function to add the class 'done' which changes the text to be crossed out
  * when the checkbox is clicked
  * @param {object} checkbox the html element input type=checkbox
- * @param {object} div the element to be checked for the class 'done
+ * @param {object} group the list-group
+ * @param {object} parentElement the element to be checked for the class 'done
  */
-const addCheckboxClickListener = (checkbox, div) => {
+const addCheckboxClickListener = (icon, group, parentElement) => {
   const classDone = 'done';
 
   // add click listeners
-  checkbox.click(() => {
-    if (div.hasClass(classDone)) {
-      div.removeClass(classDone);
+  group.click(() => {
+    if (parentElement.hasClass(classDone)) {
+      parentElement.removeClass(classDone);
+      icon.removeClass('fas fa-check fa-1x mr-3');
+      icon.addClass('far fa-square fa-1x mr-3');
     } else {
-      div.addClass(classDone);
+      parentElement.addClass(classDone);
+      icon.removeClass('far fa-square fa-1x mr-3');
+      icon.addClass('fas fa-check fa-1x mr-3');
     }
   });
 };
@@ -171,15 +176,17 @@ const addCheckboxClickListener = (checkbox, div) => {
  * @param {object} parentElement the element that this appends to
  */
 const renderIngredients = (ingredient, parentElement) => {
-  const li = $('<li>', { class: 'list-group-item' });
-  const checkbox = $('<input>', { type: 'checkbox' });
-  const p = $('<p>', { class: 'd-inline' }).text(' ' + ingredient);
+  const wrap = $('<div>');
+  const listGroup = $('<li>', { class: 'list-group-item' });
+  const icon = $('<i>', { class: 'far fa-square fa-1x mr-3' });
+  const text = $('<p>', { class: 'd-inline' }).text(' ' + ingredient);
 
-  addCheckboxClickListener(checkbox, li);
+  addCheckboxClickListener(icon, listGroup, wrap);
 
-  $('#' + parentElement).append(li);
-  li.append(checkbox);
-  li.append(p);
+  $('#' + parentElement).append(wrap);
+  wrap.append(listGroup);
+  listGroup.append(icon);
+  listGroup.append(text);
 };
 
 /**

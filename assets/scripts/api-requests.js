@@ -20,7 +20,7 @@ const getUnsplashImages = (searchTerm = currentSearchTerm, apikey = UNSPLASH_API
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_KEYS[2]) => {
+const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_KEYS[0]) => {
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/complexSearch?query=' + searchTerm + '&number=' + limit + '&offset=' + offset + '&apiKey=' + apiKey + filters;
 
@@ -53,7 +53,7 @@ const getRecipeAdvance = (filters, searchTerm, offset = requestOffset, limit = r
  * @param {boolean} isPantry true returns recipes containing common pantry ingredients
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = false, apiKey = SPOONACULAR_KEYS[2]) => {
+const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = false, apiKey = SPOONACULAR_KEYS[0]) => {
   $('#modal').remove(); // delete modal
   clearSearchResults();
 
@@ -87,7 +87,7 @@ const getRecipeByIngredients = (ingredients, limit = requestLimit, isPantry = fa
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRandomRecipe = (limit = requestLimit, apiKey = SPOONACULAR_KEYS[2]) => {
+const getRandomRecipe = (limit = requestLimit, apiKey = SPOONACULAR_KEYS[0]) => {
   clearSearchResults();
 
   // the url past to the request header
@@ -116,7 +116,7 @@ const getRandomRecipe = (limit = requestLimit, apiKey = SPOONACULAR_KEYS[2]) => 
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getSimilarRecipeId = (id, limit = requestLimit, apiKey = SPOONACULAR_KEYS[2]) => {
+const getSimilarRecipeId = (id, limit = requestLimit, apiKey = SPOONACULAR_KEYS[0]) => {
   clearSearchResults();
 
   // the url past to the request header
@@ -145,7 +145,7 @@ const getSimilarRecipeId = (id, limit = requestLimit, apiKey = SPOONACULAR_KEYS[
  * @param {string} id the id of the recipe
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipeById = (id, apiKey = SPOONACULAR_KEYS[2]) => {
+const getRecipeById = (id, apiKey = SPOONACULAR_KEYS[0]) => {
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/' + id + '/information?includeNutrition=true' + '&apiKey=' + apiKey;
 
@@ -183,7 +183,7 @@ const getRecipeById = (id, apiKey = SPOONACULAR_KEYS[2]) => {
  * @param {number} limit the number of results returned from the request
  * @param {string} apiKey the API key used to access spoonacular api
  */
-const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_KEYS[2]) => {
+const getRecipe = (searchTerm, offset = requestOffset, limit = requestLimit, apiKey = SPOONACULAR_KEYS[0]) => {
   // the url past to the request header
   const url = 'https://api.spoonacular.com/recipes/search?query=' + searchTerm + '&number=' + limit + '&apiKey=' + apiKey + '&offset=' + offset;
   // send a GET request to the search endpoint
