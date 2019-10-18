@@ -309,7 +309,7 @@ function clickedRecipeDetails() {
   $('#search-results').empty();
 
   // get the ID of the button
-  const id = parseInt($(this).attr('id'));
+  const id = parseInt($(this).attr('RecipeId'));
 
   // get the recipe from the recipeArr that matches the id
   const recipe = parseRecipeArray(recipeArr, id);
@@ -349,7 +349,7 @@ function clickedRecipeDetails() {
  */
 const renderSearchResults = (recipe, ingredients) => {
   // create html elements for the card
-  const card = $('<div>', { class: 'card mt-3' });
+  const card = $('<div>', { class: 'card mt-3 recipe-details-card', recipeId: recipe.id });
   const cardHeader = $('<h6>', { class: 'card-header bg-primary text-light' }).text(recipe.title + ' - (Health Rating: ' + recipe.healthScore + ')');
   const row = $('<div>', { class: 'row no-gutters' });
 
@@ -362,7 +362,7 @@ const renderSearchResults = (recipe, ingredients) => {
   const cardBody = $('<div>', { class: 'card-body' });
   const cardTitle = $('<h5>', { class: 'card-title' }).text('Prep. Time: ' + recipe.readyInMinutes + ' minute(s) - Serving Size: ' + recipe.servings);
   const cardText = $('<p>', { class: 'card-text' }).text('Ingredients: ' + ingredients);
-  const button = $('<button>', { class: 'btn btn-link text-dark p-0 recipe-details-button', id: recipe.id }).text('View Recipe Details');
+  const button = $('<button>', { class: 'btn btn-link text-dark p-0 recipe-details-button', recipeId: recipe.id }).text('View Recipe Details');
 
   // append elements to the html
   $('#search-results').append(card);
@@ -525,6 +525,7 @@ window.onload = () => {
 
   // listen for clicks on the 'view detailed recipe' button
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
+  $(document).on('click', '.recipe-details-card', clickedRecipeDetails);
 
   // listen for clicks on 'view nutirtion information'
   $(document).on('click', '#nutrition-button', () => {
