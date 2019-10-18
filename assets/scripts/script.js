@@ -237,7 +237,11 @@ const renderGroupDetails = (elementName, recipeName) => {
 
 // function to get a random url from the unsplashImageArr
 function randomImageUrl() {
-  return unsplashImageArr[Math.floor(Math.random() * unsplashImageArr.length)].urls.thumb;
+  if (unsplashImageArr.length === 0) {
+    return './assets/images/eggplant.gif';
+  } else {
+    return unsplashImageArr[Math.floor(Math.random() * unsplashImageArr.length)].urls.thumb;
+  }
 }
 
 /**
@@ -252,7 +256,7 @@ const renderRecipeInfo = recipe => {
 
   // column 1 (the image)
   const col1 = $('<div>', { class: 'col-md-4' });
-  const img = $('<img>', { src: recipe.image, class: 'float-left mr-3 unsplash' });
+  const img = $('<img>', { src: recipe.image, class: 'float-left mr-3 w-100 unsplash' });
 
   // column 2 (the recipe information)
   const col2 = $('<div>', { class: 'col-md-8' });
@@ -505,7 +509,7 @@ window.onload = () => {
   // listen to click for home button
   $('#home-button').click(() => {
     clearSearchResults();
-    $();
+    $('#footer').empty();
   });
 
   // listen to click for the random recipe button
@@ -523,7 +527,7 @@ window.onload = () => {
     renderSearchBar('Enter the ingredient(s)', 'Seperate ingredients by a space when searching with multiple.', 0);
   });
 
-  // listen for clicks on the 'view detailed recipe' button
+  // listen for clicks on the 'view detailed recipe' button or the search results card
   $(document).on('click', '.recipe-details-button', clickedRecipeDetails);
   $(document).on('click', '.recipe-details-card', clickedRecipeDetails);
 

@@ -7072,8 +7072,13 @@ body {
   width: 80%;
   /* Could be more or less, depending on screen size */ }
 
-.col-md-4 img {
-  width: 100%; }
+.recipe-details-card {
+  transition: transform 0.2s; }
+  .recipe-details-card:hover {
+    transform: scale(1.05);
+    z-index: 3; }
+  .recipe-details-card img {
+    width: 100%; }
 
 .done {
   text-decoration: line-through; }
