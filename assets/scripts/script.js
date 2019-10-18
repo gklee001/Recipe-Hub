@@ -420,41 +420,44 @@ const renderLoadButton = num => {
 const getInputFromModal = num => {
   resetGlobalCounters();
 
-  // check if .form-control is empty and alert user
-  if (!$('#custom-search').val()) {
-    renderModal('Warning', 'You must enter something to search...', 5);
-  }
+  switch (num) {
+    case 0:
+      // check if .form-control is empty and alert user
+      if (!$('#custom-search').val()) {
+        renderModal('Warning', 'You must enter something to search...', 5);
+        break;
+      } else {
+        // store search in input
+        const input = $('#custom-search').val();
 
-  // else... user has entered text into the search bar
-  else {
-    // store search in input
-    const input = $('#custom-search').val();
-
-    switch (num) {
-      case 0:
         // update currentSearchTerm with formatted ingredients
         currentSearchTerm = formatInputIngredients(input);
 
         // format the ingredients and call the getRecipeByIngredients
         getRecipeByIngredients(currentSearchTerm);
         break;
-      case 1:
-        // update currentSearchTerm with the input
-        currentSearchTerm = input;
+      }
 
-        // update the requestFilter
-        requestFilter = createFilterStr();
+    case 1:
+      // store search in input
+      const input = $('#custom-search').val();
 
-        // format the filters and call getRecipeAdvance
-        getRecipeAdvance(requestFilter, input);
-        break;
-    }
-    // clear previous search results
-    $('#search-results').empty();
+      // update currentSearchTerm with the input
+      currentSearchTerm = input;
 
-    // clear the footer
-    $('#footer').empty();
+      // update the requestFilter
+      requestFilter = createFilterStr();
+
+      // format the filters and call getRecipeAdvance
+      getRecipeAdvance(requestFilter, input);
+      break;
   }
+
+  // clear previous search results
+  $('#search-results').empty();
+
+  // clear the footer
+  $('#footer').empty();
 };
 
 // function to grab what the user searches for and call getRecipe to render the search results
