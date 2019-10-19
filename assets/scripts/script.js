@@ -1,3 +1,9 @@
+// function to scroll to the top of the document
+const goToTop = () => {
+  $('body').scrollTop(0); // For Safari
+  $('html').scrollTop(0); // For Chrome, Firefox, IE and Opera
+};
+
 // function to prevent page reload and empty #search-results
 const clearSearchResults = () => {
   event.preventDefault();
@@ -313,7 +319,7 @@ function clickedRecipeDetails() {
   $('#search-results').empty();
 
   // scroll to the top of the page
-  $('body').scrollTop(0);
+  goToTop();
 
   // get the ID of the button
   const id = parseInt($(this).attr('RecipeId'));
@@ -500,6 +506,7 @@ const getInput = () => {
   }
 };
 
+// on page load...
 window.onload = () => {
   resetGlobalCounters();
 
@@ -547,8 +554,21 @@ window.onload = () => {
     $('#footer').empty();
   });
 
-  $('#scroll-up-button').click(function() {
-    console.log('scroll up clicked');
-    $('body').scrollTop(0);
-  });
+  $('#scroll-button').click(goToTop);
+};
+
+const scrollListener = () => {
+  // displays the scroll button
+  if ($('body').scrollTop() > 20 || $('html').scrollTop() > 20) {
+    scrollButton.css('display', 'block');
+  }
+  // hide the scroll button
+  else {
+    scrollButton.css('display', 'none');
+  }
+};
+
+// on page scroll...
+window.onscroll = () => {
+  scrollListener();
 };

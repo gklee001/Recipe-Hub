@@ -7043,37 +7043,27 @@ body {
 #search-button {
   z-index: 1; }
 
-/* The Modal (background) */
 #modal {
   position: fixed;
-  /* Stay in place */
-  z-index: 2;
-  /* Sit on top */
+  z-index: 4;
   left: 0;
   top: 0;
   width: 100%;
-  /* Full width */
   height: 100%;
-  /* Full height */
   overflow: auto;
-  /* Enable scroll if needed */
   background-color: black;
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */ }
+  background-color: rgba(0, 0, 0, 0.4); }
 
-/* Modal Content/Box */
 #modal-content {
-  background-color: #fefefe;
+  background-color: #fff;
   margin: 15% auto;
-  /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  /* Could be more or less, depending on screen size */ }
+  border: 1px solid #183658;
+  width: 80%; }
 
 .recipe-details-card {
-  transition: transform 0.2s; }
+  transition: transform 0.2s;
+  cursor: pointer; }
   .recipe-details-card:hover {
     transform: scale(1.05);
     z-index: 3; }
@@ -7095,7 +7085,8 @@ ul .list-group-item:nth-child(odd) {
 tbody tr:hover,
 ul .list-group-item:hover {
   background-color: #234f80;
-  color: #fff; }
+  color: #fff;
+  cursor: pointer; }
 
 #load-button {
   border-radius: 0; }
@@ -7104,3 +7095,17 @@ ul .list-group-item:hover {
   object-fit: scale-down;
   height: 210px;
   overflow: hidden; }
+
+#scroll-button {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  border: none;
+  background-color: #2e67a8;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px; }
+  #scroll-button#scroll-button:hover {
+    background-color: #0d1d30; }

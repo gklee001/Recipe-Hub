@@ -103,3 +103,6 @@ const sort = [
   'sugar',
   'zinc'
 ];
+
+// grab the scroll-button
+const scrollButton = $('#scroll-button');
