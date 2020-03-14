@@ -4,7 +4,7 @@ Recipe Hub a web app that allows users to search for recipes using keywords, spe
 
 ## Usage
 
-View live demo [here](https://doanja.github.io/Recipe-Sluts/).
+View live demo [here](https://gklee001.github.io/Recipe-Hub/).
 
 1. Enter key word of the recipe you want to search for and click search.
 2. Find a recipe from the search result and click **view details**.
