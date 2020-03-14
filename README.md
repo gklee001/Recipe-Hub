@@ -1,6 +1,6 @@
-# Recipe Sluts
+# Recipe Hub
 
-Recipe Sluts a web app that allows users to search for recipes using keywords, specific ingredients, random recipes, and more using Spoonacular's API. With a mobile-first approach, recipes are organized into a user friendly and organized way for the best user experience. Searching for recipes is made easy. Looking for a quick recipe under 10 minutes, or maybe a recipe with specific ingredients around the house? No problem. Recipe Sluts targets multiple endpoints from Spoonacular that guarantees that any user can find something to cook.
+Recipe Hub a web app that allows users to search for recipes using keywords, specific ingredients, random recipes, and more using Spoonacular's API. With a mobile-first approach, recipes are organized into a user friendly and organized way for the best user experience. Searching for recipes is made easy. Looking for a quick recipe under 10 minutes, or maybe a recipe with specific ingredients around the house? No problem. Recipe Sluts targets multiple endpoints from Spoonacular that guarantees that any user can find something to cook.
 
 ## Usage
 
